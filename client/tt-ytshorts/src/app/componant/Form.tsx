@@ -1,5 +1,6 @@
 "use client";
 import { useForm } from 'react-hook-form';
+import { DevTool } from "@hookform/devtools";
 
 type FormData = {
     ttLink : string;
@@ -10,29 +11,38 @@ function Form() {
     const {
         register,
         handleSubmit,
+        control,
         formState: { errors },
       } = useForm<FormData>();
 
+      const tiktokVideoRegex = /tiktok\.com(.*)\//;
+
       const onSubmit = (data:FormData) => {
         console.log(data)
-      
       }
   return (
+    <>
+    
              <form
                   onSubmit={handleSubmit(onSubmit)}
                   className=""
                   >
                <div className="justify-center items-center gap-x-3 sm:flex">
-                  
-                  <input {...register("ttLink",{required:true})} type="text" id="helper-text" aria-describedby="helper-text-explanation" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Enter your tiktok Link"></input>
-                      
+                  <input {...register("ttLink",{required:true,
+                    pattern: {
+                        value: tiktokVideoRegex,
+                        message: 'Invalid TikTok video link',
+                      },
+                    
+                })} type="text" id="helper-text" aria-describedby="helper-text-explanation" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Enter your tiktok Link"></input>
                   </div>  
+                  {errors.ttLink?.message && <p className="mt-2 text-sm text-red-600 dark:text-red-500"><span className="font-medium"> {errors.ttLink?.message} </span> </p>}
                   
                   <div className="grid gap-6 mt-5 md:grid-cols-2">
                             {/* options */}
-                    <div className="flex items-center pl-4 border border-gray-200 rounded dark:border-gray-700">
-                            <input  id="bordered-checkbox-1" type="checkbox" {...register("filter")} className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
-                            <label htmlFor="bordered-checkbox-1" className="w-full py-4 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Filter 🎭</label>
+                    <div className="flex items-center pl-4 border border-gray-200 rounded dark:border-gray-700 ">
+                            <input  id="bordered-checkbox-1" type="checkbox" {...register("filter")} className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600 "/>
+                            <label htmlFor="bordered-checkbox-1" className="w-full py-4 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300 ">Filter 🎭</label>
                         </div>
                         <div className="flex items-center pl-4 border border-gray-200 rounded dark:border-gray-700">
                             <input   id="bordered-checkbox-2" type="checkbox" {...register("logo")} className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
@@ -56,6 +66,8 @@ function Form() {
                     </button>
                   
               </form>
+              <DevTool control={control} />
+    </>    
   )
 }
 

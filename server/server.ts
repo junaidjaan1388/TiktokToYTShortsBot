@@ -15,7 +15,7 @@ app.use(express.json())
 try{
      connect(process.env.MONGO_URL!);
      console.log("Connected To MongoDB !")
-     cronjobFunc();
+    // cronjobFunc();
 }catch(e){
     console.log('Error While connecting to MongoDB!!')
     console.log(e)
@@ -34,7 +34,7 @@ app.post('/AddNewLinkToWaitList',async (req:express.Request,res:express.Response
         tiktokLink:req.body.tiktokLink,
         logo:req.body.logo,
         filter:req.body.filter,
-        isWorking:req.body.isWorking
+        isWorking:false
      }).then(()=>res.send(true))
        .catch(()=>{
         res.status(400) 
