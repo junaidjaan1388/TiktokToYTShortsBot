@@ -1,7 +1,7 @@
 
-export default function TikTable() {
+export default async function TikTable() {
   return (
-    <div>TikTable</div>
+    <div>Table</div>
   )
 }
 

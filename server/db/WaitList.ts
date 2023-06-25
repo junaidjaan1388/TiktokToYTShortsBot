@@ -15,7 +15,10 @@ interface ILinks {
     filter: { type: Boolean, required: true },
     duration: { type: Number, required: true },
     isWorking: { type: Boolean, required: true },
-  });
+    
+  },
+  { timestamps: true }
+  );
 
     //MODAL 
   export const WaitList = model<ILinks>('waitlists', WaitListSchema);
