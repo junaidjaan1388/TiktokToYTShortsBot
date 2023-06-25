@@ -5,6 +5,7 @@ interface ILinks {
     tiktokLink: string;
     logo: boolean;
     filter: boolean;
+    duration:number;
     isWorking:boolean
   }
 
@@ -12,6 +13,7 @@ interface ILinks {
     tiktokLink: { type: String, required: true },
     logo: { type: Boolean, required: true },
     filter: { type: Boolean, required: true },
+    duration: { type: Number, required: true },
     isWorking: { type: Boolean, required: true },
   });
 

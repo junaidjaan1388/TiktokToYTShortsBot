@@ -5,6 +5,7 @@ import cors from 'cors';
 import { WaitList , CreateLink, GetAllWaitList, GetFirstWaitList, DeleteLink, CheckifisWorking } from './db/WaitList';
 import { cronjobFunc } from './cronjobFunc';
 import cron from 'node-cron'
+import { GetTiktokDuration } from './tiktok';
 dotenv.config()
 const app: Application = express();
 
@@ -22,6 +23,7 @@ try{
 }
 
 
+
 //https://crontab.guru/#*/30_*_*_*_*
 // cron.schedule('*/30 * * * * ',()=>{
 //         cronjobFunc();
@@ -29,11 +31,13 @@ try{
 
 
 app.post('/AddNewLinkToWaitList',async (req:express.Request,res:express.Response)=>{
-    
+    const duration = await GetTiktokDuration(req.body.tiktokLink)
+    console.log(duration)
     const result = await CreateLink({
         tiktokLink:req.body.tiktokLink,
         logo:req.body.logo,
         filter:req.body.filter,
+        duration:duration as number,
         isWorking:false
      }).then(()=>res.send(true))
        .catch(()=>{

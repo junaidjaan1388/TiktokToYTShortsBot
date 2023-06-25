@@ -3,6 +3,8 @@ import ffmpeg from 'fluent-ffmpeg';
 import { TiktokDL } from "@tobyg74/tiktok-api-dl"
 import Downloader from "nodejs-file-downloader"
 import { UploadShorts } from './UploadShorts';
+import getVideoDurationInSeconds from 'get-video-duration';
+
 
 ffmpeg.setFfmpegPath(ffmpegPath);
 
@@ -198,5 +200,22 @@ export async function HandleFromTiktok(tiktok_url:string,logo:boolean,filter:boo
         
 
 }
+
+export const GetTiktokDuration = async (tiklink:string) => {
+  return TiktokDL(tiklink).then(async (result) => {
+    if(typeof result.result?.video != 'undefined'){
+        console.log(result.result?.video[0])
+        // From a URL...
+           return getVideoDurationInSeconds(
+                result.result?.video[0]
+            ).then((duration) => {
+                console.log(duration)
+                return duration.toFixed(2)
+            }).catch((e)=>{return 0})
+            
+    }
+    
+}).catch((e)=>{return 0})
+} 
 
 //HandleFromTiktok("https://www.tiktok.com/@vascolevrai/video/7240567363794504987",true,true)
