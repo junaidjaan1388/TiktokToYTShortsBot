@@ -23,12 +23,17 @@ export type TTlink = {
 
 export const columns: ColumnDef<TTlink>[] = [
   {
+     accessorKey: "id",
+      header: "ID",
+      cell:({row})=> (row.index + 1)
+  },
+  {
     accessorKey: "tiktokLink",
     header: "Tiktok",
     cell:({row})=> {
         return (
             <a target="_blank" href={row.getValue('tiktokLink')} rel="noopener noreferrer">
-                    <Image src='/template.jpg' alt='david'className="ml-1 md:ml-5 lg:ml-5" width={120} height={250} />
+                    <Image src='/template.jpg' alt='david' width={120} height={250} />
             </a>
         )
     }
@@ -75,31 +80,37 @@ export const columns: ColumnDef<TTlink>[] = [
   },
   {
     accessorKey: "createdAt",
-    cell : info =>  timeAgo.format(new Date(info.row.getValue('createdAt'))),
+    cell : info => (<div className="text-center">{timeAgo.format(new Date(info.row.getValue('createdAt')))}</div>) ,
     header: ({ column }) => {
         return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            CreatedAt
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
+            <div className="text-center">
+            <Button
+                variant="ghost"
+                onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            >
+                CreatedAt
+                <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+            </div>
+          
         )
       },
   },
   {
     accessorKey: "updatedAt",
-    cell : info =>  timeAgo.format(new Date(info.row.getValue('updatedAt'))),
+    cell : info =>  (<div className="text-center">{timeAgo.format(new Date(info.row.getValue('updatedAt')))}</div>) ,
     header: ({ column }) => {
         return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            UpdatedAt
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
+         <div className="text-center">
+            <Button
+                variant="ghost"
+                onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            >
+                UpdatedAt
+                <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+         </div>   
+          
         )
       },
     

@@ -41,8 +41,8 @@ app.post('/AddNewLinkToWaitList',async (req:express.Request,res:express.Response
         isWorking:false
      }).then(()=>res.send(true))
        .catch(()=>{
-        res.status(400) 
-        res.send('Error accured While ')
+        return res.status(404).json({ success: false, message: 'An error occurred, please try again later' });
+
     }) 
 })
 
