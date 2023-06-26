@@ -2,8 +2,8 @@
 import { useForm } from 'react-hook-form';
 import { DevTool } from "@hookform/devtools";
 import axios from 'axios'
-import { useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
+import {ImagePlus , SlidersHorizontal} from 'lucide-react'
 
 type FormData = {
     ttLink : string;
@@ -87,12 +87,13 @@ function Form() {
                             {/* options */}
                     <div className="flex items-center pl-4 border border-gray-200 rounded dark:border-gray-700 ">
                             <input  id="bordered-checkbox-1" type="checkbox" {...register("filter")} className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600 "/>
-                            <label htmlFor="bordered-checkbox-1" className="w-full py-4 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300 ">Filter 🎭</label>
+                            <label htmlFor="bordered-checkbox-1" className="flex justify-center w-full py-4 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300 ">Filter <SlidersHorizontal color="#991b1b" className='ml-2 h-5 w-5' /></label>
                         </div>
                         <div className="flex items-center pl-4 border border-gray-200 rounded dark:border-gray-700">
                             <input   id="bordered-checkbox-2" type="checkbox" {...register("logo")} className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
-                            <label htmlFor="bordered-checkbox-2" className="w-full py-4 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Logo </label>
                             
+                            <label htmlFor="bordered-checkbox-2" className="flex justify-center w-full py-4 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Logo <ImagePlus color="#991b1b" className='ml-2 h-5 w-5' /> </label>
+
                         </div>
                     </div>
                     <button
@@ -105,7 +106,7 @@ function Form() {
                         <span
                             className="block border border-pruple-600 bg-violet-600 px-12 py-3 transition-transform active:border-pruple-500 active:bg-violet-500 group-hover:-translate-x-1 group-hover:-translate-y-1"
                         >
-                            Add Link
+                            Add Links
                         </span>
                     </button>
                   
