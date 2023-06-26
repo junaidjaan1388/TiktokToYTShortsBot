@@ -4,6 +4,8 @@ import { DevTool } from "@hookform/devtools";
 import axios from 'axios'
 import toast, { Toaster } from 'react-hot-toast';
 import {ImagePlus , SlidersHorizontal} from 'lucide-react'
+import { useRouter } from 'next/navigation';
+import { useTransition } from 'react';
 
 type FormData = {
     ttLink : string;
@@ -22,7 +24,10 @@ function Form() {
       
 
       const tiktokVideoRegex = /tiktok\.com(.*)\//;
+      const router = useRouter();
+      const [isPending, startTransition] = useTransition();
       
+
       const onSubmit = async (dataform:FormData) => {
         console.log(dataform)
         console.log(process.env.NEXT_PUBLIC_API_URL+'/AddNewLinkToWaitList')
@@ -38,6 +43,13 @@ function Form() {
                 id: toastId,
               });
               reset();
+
+              startTransition(() => {
+                // Refresh the current route and fetch new data from the server without
+                // losing client-side browser or React state.
+                router.refresh();
+              });
+              
               
         }catch(e){
             console.log("Axios Error")
@@ -109,6 +121,7 @@ function Form() {
                             Add Links
                         </span>
                     </button>
+                
                   
               </form>
               {/* <DevTool control={control} /> */}

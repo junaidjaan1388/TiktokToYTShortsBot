@@ -5,7 +5,8 @@ import axios from "axios"
 
 async function getData(): Promise<TTlink[]> {
   // Fetch data from your API here.
-  return axios(process.env.NEXT_PUBLIC_API_URL+'/GetWaitList').then((res)=>res.data)
+  const res =   await fetch(process.env.NEXT_PUBLIC_API_URL+'/GetWaitList', { cache: 'no-store' });
+  return res.json();
     // ...
 }
 

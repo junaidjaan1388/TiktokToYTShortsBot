@@ -12,6 +12,7 @@ const timeAgo = new TimeAgo('en-US')
 // You can use a Zod schema here if you want.
 
 export type TTlink = {
+    _id:string
     tiktokLink: string
     logo: boolean
     filter: boolean
@@ -23,9 +24,9 @@ export type TTlink = {
 
 export const columns: ColumnDef<TTlink>[] = [
   {
-     accessorKey: "id",
+     accessorKey: "_id",
       header: "ID",
-      cell:({row})=> (row.index + 1)
+     cell:({row})=> (row.index + 1)
   },
   {
     accessorKey: "tiktokLink",
@@ -77,13 +78,14 @@ export const columns: ColumnDef<TTlink>[] = [
   {
     accessorKey: "duration",
     header: "Duration",
+    // cell : ({row}) => { return (row.getValue('_id')) }
   },
   {
     accessorKey: "createdAt",
     cell : info => (<div className="text-center">{timeAgo.format(new Date(info.row.getValue('createdAt')))}</div>) ,
     header: ({ column }) => {
         return (
-            <div className="text-center">
+            // <div className="text-center">
             <Button
                 variant="ghost"
                 onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
@@ -91,7 +93,7 @@ export const columns: ColumnDef<TTlink>[] = [
                 CreatedAt
                 <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
-            </div>
+            // </div>
           
         )
       },
