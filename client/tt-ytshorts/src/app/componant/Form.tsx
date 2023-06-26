@@ -83,7 +83,7 @@ function Form() {
                         message: 'Invalid TikTok video link',
                       },
                     
-                })} type="text" id="helper-text" aria-describedby="helper-text-explanation" className="block p-2.5 w-full z-20  bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Enter your tiktok Link">
+                })}  type="text" id="helper-text" aria-describedby="helper-text-explanation" className="block p-2.5 w-full z-20  bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Enter your tiktok Link">
                 </input>
                 <button className='absolute top-0 right-0 p-2.5 ml-2 bg-purple-700 rounded-r-lg border border-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-800' onClick={handlePaste}>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5  font-medium text-white rounded-r-lg " >

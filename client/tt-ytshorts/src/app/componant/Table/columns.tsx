@@ -4,12 +4,18 @@ import { ColumnDef } from "@tanstack/react-table"
 import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en'
 import Image from "next/image"
-import {BadgeCheck , BadgeX , ArrowUpDown} from 'lucide-react'
+import {BadgeCheck , BadgeX , ArrowUpDown , MoreHorizontal ,Edit, Trash2} from 'lucide-react'
 import { Button } from "@/components/ui/button"
+import { Fragment } from 'react'
+import { Menu, Transition } from '@headlessui/react'
+
 TimeAgo.addDefaultLocale(en)
 const timeAgo = new TimeAgo('en-US')
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
+function classNames(...classes:any[]) {
+  return classes.filter(Boolean).join(' ')
+}
 
 export type TTlink = {
     _id:string
@@ -85,7 +91,7 @@ export const columns: ColumnDef<TTlink>[] = [
     cell : info => (<div className="text-center">{timeAgo.format(new Date(info.row.getValue('createdAt')))}</div>) ,
     header: ({ column }) => {
         return (
-            // <div className="text-center">
+            <div className="text-center">
             <Button
                 variant="ghost"
                 onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
@@ -93,7 +99,7 @@ export const columns: ColumnDef<TTlink>[] = [
                 CreatedAt
                 <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
-            // </div>
+            </div>
           
         )
       },
@@ -116,5 +122,74 @@ export const columns: ColumnDef<TTlink>[] = [
         )
       },
     
+  },
+  {
+    id: "actions",
+    header: ({ column }) => {
+      return (
+          <div className="text-center">
+            Actions
+          </div>
+        
+      )
+    },
+    cell: ({ row }) => {
+ 
+      return (
+        <div className='text-center'>
+    <Menu as="div" className="relative inline-block text-left">
+      <div>
+        <Menu.Button className="inline-flex justify-center w-full rounded-md shadow-sm px-4 py-2 hover:bg-accent ">
+          {/* <ChevronDownIcon className="-mr-1 ml-2 h-5 w-5" aria-hidden="true" /> */}
+          <MoreHorizontal color="#ffffff" />
+        </Menu.Button>
+      </div>
+
+      <Transition
+        as={Fragment}
+        enter="transition ease-out duration-100"
+        enterFrom="transform opacity-0 scale-95"
+        enterTo="transform opacity-100 scale-100"
+        leave="transition ease-in duration-75"
+        leaveFrom="transform opacity-100 scale-100"
+        leaveTo="transform opacity-0 scale-95"
+      >
+        <Menu.Items className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-gray-900 ring-1 ring-white ring-opacity-5 divide-y divide-gray-100 focus:outline-none">
+          <div className="py-1">
+            <Menu.Item>
+              {({ active }) => (
+                <a
+                  href="#"
+                  className={classNames(
+                    active ? 'bg-gray-500 text-gray-400 ' : 'text-gray-200',
+                    'group flex items-center px-4 py-2 text-sm  hover:bg-gray-800 hover:text-gray-200'
+                  )}
+                >
+                  <Edit color="#ffffff" className='mr-3 h-5 w-5'/>
+                  Edit
+                </a>
+              )}
+            </Menu.Item>
+            <Menu.Item>
+              {({ active }) => (
+                <a
+                  href="#"
+                  className={classNames(
+                    active ? 'bg-gray-500 text-red-200 ' : 'text-red-500',
+                    'group flex items-center px-4 py-2 text-sm hover:bg-red-600/10 hover:text-red-200'
+                  )}
+                >
+                  <Trash2 color="#a30000" className="mr-3 h-5 w-5"/>
+                  Delete
+                </a>
+              )}
+            </Menu.Item>
+          </div>
+        </Menu.Items>
+      </Transition>
+    </Menu>
+  </div>
+      )
+    },
   },
 ]

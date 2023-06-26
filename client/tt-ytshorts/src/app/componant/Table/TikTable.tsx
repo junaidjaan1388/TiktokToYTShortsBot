@@ -1,6 +1,5 @@
 import { TTlink, columns } from "./columns"
 import { DataTable } from "./data-table"
-import axios from "axios"
 
 
 async function getData(): Promise<TTlink[]> {
