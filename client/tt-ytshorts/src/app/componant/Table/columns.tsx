@@ -21,6 +21,9 @@ function classNames(...classes:any[]) {
 export type TTlink = {
     _id:string
     tiktokLink: string
+    title?:string
+    description?:string
+    dynamic_cover?:string
     logo: boolean
     filter: boolean
     duration:number
@@ -30,8 +33,9 @@ export type TTlink = {
 }
 
 export const columns: ColumnDef<TTlink>[] = [
+  
   {
-     accessorKey: "_id",
+     accessorKey: "id",
       header: "ID",
      cell:({row})=> (row.index + 1)
   },
@@ -40,12 +44,23 @@ export const columns: ColumnDef<TTlink>[] = [
     header: "Tiktok",
     cell:({row})=> {
         return (
-            <a target="_blank" href={row.getValue('tiktokLink')} rel="noopener noreferrer">
-                    <Image src='/template.jpg' alt='david' width={120} height={250} />
+            <a  target="_blank" href={row.getValue('tiktokLink')} rel="noopener noreferrer">
+                    <Image src={row.original.dynamic_cover || './template.jpg'} alt='david' width={120} height={200} />
             </a>
         )
     }
   },
+  {
+    accessorKey: "title",
+     header: "Title",
+     cell:({row})=>{
+      return(
+        <div className='text-sm text-ellipsis overflow-hidden ...'>
+           {row.getValue('title')}
+        </div>
+      )
+     }
+ },
   {
     accessorKey: "logo",
     header: "Logo",
@@ -189,7 +204,7 @@ export const columns: ColumnDef<TTlink>[] = [
         </Menu.Items>
       </Transition>
     </Menu>
-    <DeleteDialog open={open} setOpen={setOpen} id={row.getValue('_id')}/>
+    <DeleteDialog open={open} setOpen={setOpen} id={row.original._id}/>
   </div>
       )
     },

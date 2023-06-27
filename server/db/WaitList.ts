@@ -3,6 +3,9 @@ import { Schema, model } from 'mongoose';
 
 interface ILinks {
     tiktokLink: string;
+    title?:string,
+    description?:string,
+    dynamic_cover?:string,
     logo: boolean;
     filter: boolean;
     duration:number;
@@ -11,6 +14,9 @@ interface ILinks {
 
   const WaitListSchema = new Schema<ILinks>({
     tiktokLink: { type: String, required: true },
+    title: { type: String, required: false },
+    description: { type: String, required: false },
+    dynamic_cover: { type: String, required: false },
     logo: { type: Boolean, required: true },
     filter: { type: Boolean, required: true },
     duration: { type: Number, required: true },

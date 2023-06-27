@@ -201,21 +201,33 @@ export async function HandleFromTiktok(tiktok_url:string,logo:boolean,filter:boo
 
 }
 
-export const GetTiktokDuration = async (tiklink:string) => {
-  return TiktokDL(tiklink).then(async (result) => {
-    if(typeof result.result?.video != 'undefined'){
-        console.log(result.result?.video[0])
-        // From a URL...
-           return getVideoDurationInSeconds(
-                result.result?.video[0]
-            ).then((duration) => {
-                console.log(duration)
-                return duration.toFixed(2)
-            }).catch((e)=>{return 0})
-            
+  const GetTiktokDuration = async (tiklink:string) => {
+        try{
+            return getVideoDurationInSeconds(tiklink)
+        }catch{
+            return 0
+        }
     }
     
-}).catch((e)=>{return 0})
-} 
+
+
+
+export const GetTiktokInfo = async (tiktokLink:string) => {
+    return TiktokDL(tiktokLink).then(async(result)=>{
+      if(result.status == "success"){
+        if(typeof result.result?.video != 'undefined'){
+          const duration = await GetTiktokDuration(result.result?.video[0])
+          return {
+            Title :  result.result.description.replace(/#[^\s#]+/g,'').replace(/-/g,'') ,
+            Description :  result.result.description.match(/#[^\s#]+/g)?.join(' ') || undefined,
+            dynamic_cover : result.result?.dynamic_cover?.[0] || undefined ,
+            duration:duration
+          }
+          
+
+        }
+      }
+    })
+}
 
 //HandleFromTiktok("https://www.tiktok.com/@vascolevrai/video/7240567363794504987",true,true)

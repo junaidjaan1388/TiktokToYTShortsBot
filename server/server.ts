@@ -1,11 +1,11 @@
-import { Schema, model, connect } from 'mongoose';
+import { connect } from 'mongoose';
 import dotenv from 'dotenv';
 import express,{Application} from 'express';
 import cors from 'cors';
 import { WaitList , CreateLink, GetAllWaitList, GetFirstWaitList, DeleteLink, CheckifisWorking } from './db/WaitList';
 import { cronjobFunc } from './cronjobFunc';
 import cron from 'node-cron'
-import { GetTiktokDuration } from './tiktok';
+import { GetTiktokInfo } from './tiktok';
 dotenv.config()
 const app: Application = express();
 
@@ -31,13 +31,15 @@ try{
 
 
 app.post('/AddNewLinkToWaitList',async (req:express.Request,res:express.Response)=>{
-    const duration = await GetTiktokDuration(req.body.tiktokLink)
-    console.log(duration)
+    const tikInfo = await GetTiktokInfo(req.body.tiktokLink)
     const result = await CreateLink({
         tiktokLink:req.body.tiktokLink,
+        title : tikInfo?.Title,
+        description : tikInfo?.Description,
+        dynamic_cover : tikInfo?.dynamic_cover,
         logo:req.body.logo,
         filter:req.body.filter,
-        duration:duration as number,
+        duration:tikInfo?.duration as number,
         isWorking:false
      }).then(()=>res.send(true))
        .catch(()=>{

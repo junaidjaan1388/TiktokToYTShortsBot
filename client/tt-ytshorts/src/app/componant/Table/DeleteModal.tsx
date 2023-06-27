@@ -52,7 +52,7 @@ export default function DeleteDialog({open,setOpen,id}:ChildPropsType) {
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-5 transition-opacity" />
+            <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-5 transition-opacity backdrop-blur-sm" />
           </Transition.Child>
 
           {/* This element is to trick the browser into centering the modal contents. */}
