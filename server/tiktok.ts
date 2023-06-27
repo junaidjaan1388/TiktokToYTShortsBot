@@ -221,7 +221,7 @@ export const GetTiktokInfo = async (tiktokLink:string) => {
             Title :  result.result.description.replace(/#[^\s#]+/g,'').replace(/-/g,'') ,
             Description :  result.result.description.match(/#[^\s#]+/g)?.join(' ') || undefined,
             dynamic_cover : result.result?.dynamic_cover?.[0] || undefined ,
-            duration:duration
+            duration:Number(duration?.toFixed(2))
           }
           
 
