@@ -6,8 +6,9 @@ import en from 'javascript-time-ago/locale/en'
 import Image from "next/image"
 import {BadgeCheck , BadgeX , ArrowUpDown , MoreHorizontal ,Edit, Trash2} from 'lucide-react'
 import { Button } from "@/components/ui/button"
-import { Fragment } from 'react'
+import { Fragment, useState } from 'react'
 import { Menu, Transition } from '@headlessui/react'
+import DeleteDialog from "./DeleteModal"
 
 TimeAgo.addDefaultLocale(en)
 const timeAgo = new TimeAgo('en-US')
@@ -134,7 +135,7 @@ export const columns: ColumnDef<TTlink>[] = [
       )
     },
     cell: ({ row }) => {
- 
+      const [open, setOpen] = useState<boolean>(false)
       return (
         <div className='text-center'>
     <Menu as="div" className="relative inline-block text-left">
@@ -159,10 +160,10 @@ export const columns: ColumnDef<TTlink>[] = [
             <Menu.Item>
               {({ active }) => (
                 <a
-                  href="#"
+                
                   className={classNames(
                     active ? 'bg-gray-500 text-gray-400 ' : 'text-gray-200',
-                    'group flex items-center px-4 py-2 text-sm  hover:bg-gray-800 hover:text-gray-200'
+                    'group flex items-center px-4 py-2 text-sm cursor-pointer  hover:bg-gray-800 hover:text-gray-200'
                   )}
                 >
                   <Edit color="#ffffff" className='mr-3 h-5 w-5'/>
@@ -173,10 +174,10 @@ export const columns: ColumnDef<TTlink>[] = [
             <Menu.Item>
               {({ active }) => (
                 <a
-                  href="#"
+                  onClick={()=>setOpen(true)}
                   className={classNames(
                     active ? 'bg-gray-500 text-red-200 ' : 'text-red-500',
-                    'group flex items-center px-4 py-2 text-sm hover:bg-red-600/10 hover:text-red-200'
+                    'group flex items-center px-4 py-2 text-sm cursor-pointer hover:bg-red-600/10 hover:text-red-200'
                   )}
                 >
                   <Trash2 color="#a30000" className="mr-3 h-5 w-5"/>
@@ -188,6 +189,7 @@ export const columns: ColumnDef<TTlink>[] = [
         </Menu.Items>
       </Transition>
     </Menu>
+    <DeleteDialog open={open} setOpen={setOpen} id={row.getValue('_id')}/>
   </div>
       )
     },

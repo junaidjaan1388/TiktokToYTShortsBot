@@ -57,8 +57,13 @@ app.get('/GetFirstWaitList',async (req:express.Request,res:express.Response)=>{
     res.send(result)
 })
 app.get('/DeleteLink',async (req:express.Request,res:express.Response)=>{
-   await DeleteLink(req.query.id as string) 
-    res.send(true)
+    try {
+        await DeleteLink(req.query.id as string) 
+        res.json({ success: true, message: 'TT Deleted Successfully' })
+    }catch{
+        res.status(404).json({ success: false, message: 'An error occurred while Deleting TT, please try again later' });
+    }
+   
 })
 
 app.get('/status',async (req:express.Request,res:express.Response)=>{
