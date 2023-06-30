@@ -26,6 +26,15 @@ interface ILinks {
   { timestamps: true }
   );
 
+  type UpdateDataType = {
+    id:string,
+    tiktokLink:string,
+    title:string,
+    description:string,
+    logo:boolean,
+    filter:boolean
+  }
+
     //MODAL 
   export const WaitList = model<ILinks>('waitlists', WaitListSchema);
 
@@ -42,3 +51,5 @@ interface ILinks {
   export const CreateLink = (values:ILinks) => new WaitList(values).save().then((link)=>console.log('saved Link : '+link))
 
   export const DeleteLink = (id:string) => WaitList.findOneAndDelete({_id:id}).then(()=>console.log("Deleted Succesully"))
+
+  export const UpdateLink = (ttData:UpdateDataType)=> WaitList.findByIdAndUpdate(ttData.id,ttData)

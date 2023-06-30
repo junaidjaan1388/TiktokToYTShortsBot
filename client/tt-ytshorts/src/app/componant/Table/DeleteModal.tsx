@@ -6,16 +6,18 @@ import axios from 'axios'
 import toast, { Toaster } from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 interface ChildPropsType {
-    open:boolean
-    setOpen: Dispatch<SetStateAction<boolean>>
+  DeleteModal:boolean
+  setDeleteModal: Dispatch<SetStateAction<boolean>>
     id:string
   }
-export default function DeleteDialog({open,setOpen,id}:ChildPropsType) {
+export default function DeleteDialog({DeleteModal,setDeleteModal,id}:ChildPropsType) {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
+
   const HandleClick = async (ttId:string) => {
     const toastId = toast.loading("Please wait...")
     try{
+      setDeleteModal(false)
       await axios(process.env.NEXT_PUBLIC_API_URL+'/DeleteLink',{
         params: {
             id:ttId
@@ -29,19 +31,19 @@ export default function DeleteDialog({open,setOpen,id}:ChildPropsType) {
         // losing client-side browser or React state.
         router.refresh();
       });
-      setOpen(false)
+     
     
   }catch(e){
     toast.error('Something went wrong', {
       id: toastId,
     });
-    setOpen(false)
+    // setDeleteModal(false)
   }
 }
 
   return (
-    <Transition.Root show={open} as={Fragment}>
-      <Dialog as="div" className="fixed z-10 inset-0 overflow-y-auto" onClose={setOpen}>
+    <Transition.Root show={DeleteModal} as={Fragment}>
+      <Dialog as="div" className="fixed z-10 inset-0 overflow-y-auto" onClose={setDeleteModal}>
         <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
           <Transition.Child
             as={Fragment}
@@ -73,7 +75,7 @@ export default function DeleteDialog({open,setOpen,id}:ChildPropsType) {
                 <button
                   type="button"
                   className="bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                  onClick={() => setOpen(false)}
+                  onClick={() => setDeleteModal(false)}
                 >
                   <span className="sr-only">Close</span>
                   <X color="#b30000" />
@@ -106,7 +108,7 @@ export default function DeleteDialog({open,setOpen,id}:ChildPropsType) {
                 <button
                   type="button"
                   className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm"
-                  onClick={() => setOpen(false)}
+                  onClick={() => setDeleteModal(false)}
                 >
                   Cancel
                 </button>

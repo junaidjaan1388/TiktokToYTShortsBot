@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Fragment, useState } from 'react'
 import { Menu, Transition } from '@headlessui/react'
 import DeleteDialog from "./DeleteModal"
+import UpdateDialog from "./UpdateModal"
 
 TimeAgo.addDefaultLocale(en)
 const timeAgo = new TimeAgo('en-US')
@@ -150,7 +151,8 @@ export const columns: ColumnDef<TTlink>[] = [
       )
     },
     cell: ({ row }) => {
-      const [open, setOpen] = useState<boolean>(false)
+      const [DeleteModal, setDeleteModal] = useState<boolean>(false)
+      const [UpdateModal, setUpdateModal] = useState<boolean>(false)
       return (
         <div className='text-center'>
     <Menu as="div" className="relative inline-block text-left">
@@ -175,7 +177,7 @@ export const columns: ColumnDef<TTlink>[] = [
             <Menu.Item>
               {({ active }) => (
                 <a
-                
+                  onClick={()=>setUpdateModal(true)}
                   className={classNames(
                     active ? 'bg-gray-500 text-gray-400 ' : 'text-gray-200',
                     'group flex items-center px-4 py-2 text-sm cursor-pointer  hover:bg-gray-800 hover:text-gray-200'
@@ -189,7 +191,7 @@ export const columns: ColumnDef<TTlink>[] = [
             <Menu.Item>
               {({ active }) => (
                 <a
-                  onClick={()=>setOpen(true)}
+                  onClick={()=>setDeleteModal(true)}
                   className={classNames(
                     active ? 'bg-gray-500 text-red-200 ' : 'text-red-500',
                     'group flex items-center px-4 py-2 text-sm cursor-pointer hover:bg-red-600/10 hover:text-red-200'
@@ -204,7 +206,8 @@ export const columns: ColumnDef<TTlink>[] = [
         </Menu.Items>
       </Transition>
     </Menu>
-    <DeleteDialog open={open} setOpen={setOpen} id={row.original._id}/>
+    <DeleteDialog DeleteModal={DeleteModal} setDeleteModal={setDeleteModal} id={row.original._id}/>
+    <UpdateDialog UpdateModal={UpdateModal} setUpdateModal={setUpdateModal} row={row.original}/>
   </div>
       )
     },

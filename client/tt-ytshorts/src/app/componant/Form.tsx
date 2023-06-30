@@ -16,7 +16,6 @@ function Form() {
     const {
         register,
         handleSubmit,
-        control,
         setValue,
         reset,
         formState: { errors },

@@ -2,7 +2,7 @@ import { connect } from 'mongoose';
 import dotenv from 'dotenv';
 import express,{Application} from 'express';
 import cors from 'cors';
-import { WaitList , CreateLink, GetAllWaitList, GetFirstWaitList, DeleteLink, CheckifisWorking } from './db/WaitList';
+import { WaitList , CreateLink, GetAllWaitList, GetFirstWaitList, DeleteLink, CheckifisWorking, UpdateLink } from './db/WaitList';
 import { cronjobFunc } from './cronjobFunc';
 import cron from 'node-cron'
 import { GetTiktokInfo } from './tiktok';
@@ -67,7 +67,16 @@ app.get('/DeleteLink',async (req:express.Request,res:express.Response)=>{
     }
    
 })
-
+app.post('/UpdateLink',async (req:express.Request,res:express.Response)=>{
+    try{
+        const result = await UpdateLink(req.body)
+        res.json({ success: true, message: 'TT Updated Successfully' })
+    }catch{
+        res.status(404).json({ success: false, message: 'An error occurred while Updating TT, please try again later' });
+    }
+    
+    //res.send(result)
+})
 app.get('/status',async (req:express.Request,res:express.Response)=>{
     const result = await CheckifisWorking()
     res.send(result > 0 ? true : false) 

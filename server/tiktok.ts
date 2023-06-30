@@ -218,7 +218,7 @@ export const GetTiktokInfo = async (tiktokLink:string) => {
         if(typeof result.result?.video != 'undefined'){
           const duration = await GetTiktokDuration(result.result?.video[0])
           return {
-            Title :  result.result.description.replace(/#[^\s#]+/g,'').replace(/-/g,'') ,
+            Title :  result.result.description.replace(/#[^\s#]+/g,'').replace(/-/g,'').trim() ,
             Description :  result.result.description.match(/#[^\s#]+/g)?.join(' ') || undefined,
             dynamic_cover : result.result?.dynamic_cover?.[0] || undefined ,
             duration:Number(duration?.toFixed(2))

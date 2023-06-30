@@ -18,11 +18,11 @@ function Footer() {
     </p>
     <span className="inline-flex sm:ml-auto sm:mt-0 mt-4 justify-center sm:justify-start">
       
-      <a className="ml-3 text-gray-400">
+      <a className="ml-3 text-gray-400" href="https://twitter.com/3IMXXD" target="_blank">
         <Twitter className="w-h h-5"/>
       </a>
       
-      <a className="ml-3 text-gray-400">
+      <a className="ml-3 text-gray-400" href="https://github.com/3IMAD69" target="_blank">
         <Github className="w-5 h-5"/>
       </a>
     </span>
