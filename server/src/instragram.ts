@@ -30,7 +30,7 @@ async function DownloadReel(url:string,desc:string) {
       try {
         await downloader.download();
         console.log('Done Downloading')
-        UploadShorts(filename,'title','desc')
+       // UploadShorts(filename,'title','desc')
       } catch (error) {
         console.log(error);
       }

@@ -2,7 +2,7 @@ import { connect } from 'mongoose';
 import dotenv from 'dotenv';
 import express,{Application} from 'express';
 import cors from 'cors';
-import { WaitList , CreateLink, GetAllWaitList, GetFirstWaitList, DeleteLink, CheckifisWorking, UpdateLink } from './db/WaitList';
+import { CreateLink, GetAllWaitList, GetFirstWaitList, DeleteLink, CheckifisWorking, UpdateLink } from './db/WaitList';
 import { cronjobFunc } from './cronjobFunc';
 import cron from 'node-cron'
 import { GetTiktokInfo } from './tiktok';
