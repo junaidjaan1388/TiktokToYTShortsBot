@@ -191,6 +191,8 @@ export async function HandleFromTiktok(tiktok_url:string,logo:boolean,filter:boo
                         console.log("Download failed", error);
                     }
                 }
+            }else{
+              throw new Error('Something went wrong while getting tiktok details');
             }
         })
 
