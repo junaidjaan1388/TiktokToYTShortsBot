@@ -157,7 +157,7 @@ export const columns: ColumnDef<TTlink>[] = [
         <div className='text-center'>
     <Menu as="div" className="relative inline-block text-left">
       <div>
-        <Menu.Button className="inline-flex justify-center w-full rounded-md shadow-sm px-4 py-2 hover:bg-accent ">
+        <Menu.Button className="inline-flex justify-center w-full rounded-md shadow-sm px-4 py-2 hover:bg-accent " aria-label="Action-button">
           <MoreHorizontal color="#ffffff" />
         </Menu.Button>
       </div>

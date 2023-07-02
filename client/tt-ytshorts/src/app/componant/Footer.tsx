@@ -14,15 +14,15 @@ function Footer() {
                 />
     </a>
     <p className="text-sm text-gray-400 sm:ml-4 sm:pl-4 sm:border-l-2 sm:border-gray-800 sm:py-2 sm:mt-0 mt-4">© 2023 Tik To Shorts —
-      <a href="https://twitter.com/3IMXXD" className="text-gray-500 ml-1" target="_blank" rel="noopener noreferrer">@3IMXXD</a>
+      <a href="https://twitter.com/3IMXXD" className="text-gray-300 ml-1" target="_blank" rel="noopener noreferrer">@3IMXXD</a>
     </p>
     <span className="inline-flex sm:ml-auto sm:mt-0 mt-4 justify-center sm:justify-start">
       
-      <a className="ml-3 text-gray-400" href="https://twitter.com/3IMXXD" target="_blank">
+      <a className="ml-3 text-gray-400" href="https://twitter.com/3IMXXD" target="_blank"  aria-label="Twitter">
         <Twitter className="w-h h-5"/>
       </a>
       
-      <a className="ml-3 text-gray-400" href="https://github.com/3IMAD69" target="_blank">
+      <a className="ml-3 text-gray-400" href="https://github.com/3IMAD69" target="_blank"  aria-label="Github">
         <Github className="w-5 h-5"/>
       </a>
     </span>

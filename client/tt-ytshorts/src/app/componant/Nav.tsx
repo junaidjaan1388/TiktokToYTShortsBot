@@ -35,6 +35,7 @@ export const  Nav = () => {
             <div className="md:hidden">
                 <button className="menu-btn text-gray-400 hover:text-gray-300"
                     onClick={() => setState(!state)}
+                    aria-label="NavTab"
                 >
                     {
                         state ? (
