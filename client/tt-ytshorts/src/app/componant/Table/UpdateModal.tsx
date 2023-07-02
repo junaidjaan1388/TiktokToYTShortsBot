@@ -116,7 +116,7 @@ export default function UpdateDialog({UpdateModal,setUpdateModal,row}:ChildProps
                   </Dialog.Title>
                   <div className="mt-2">
                     <form onSubmit={handleSubmit(onSubmit)}>
-                      /* TT link */
+                      {/* TT link */}
                     <div>
                       <label htmlFor="ttlink" className="block text-sm font-medium text-gray-700">
                         TikTok Link
@@ -133,7 +133,7 @@ export default function UpdateDialog({UpdateModal,setUpdateModal,row}:ChildProps
                       </div>
                     </div>
 
-                    /**Title */
+                    {/**Title **/}
                     <div>
                       <label htmlFor="title" className="block text-sm font-medium text-gray-700">
                         Title
@@ -149,7 +149,7 @@ export default function UpdateDialog({UpdateModal,setUpdateModal,row}:ChildProps
                       </div>
                     </div>
 
-                    /**Hashtags */
+                    {/**Hashtags */}
                     <div>
                       <label htmlFor="hashtags" className="block text-sm font-medium text-gray-700">
                         Hashtags
@@ -166,7 +166,7 @@ export default function UpdateDialog({UpdateModal,setUpdateModal,row}:ChildProps
                     </div>
 
                     <div className='ml-1'>
-                    /**logo */
+                   { /**logo */}
                     <div className="relative flex items-start mt-3">
                     <div className="flex items-center h-5 ">
                       <input
@@ -186,7 +186,7 @@ export default function UpdateDialog({UpdateModal,setUpdateModal,row}:ChildProps
                     </div>
                   </div>
 
-                   /**filter */
+                   {/**filter */}
                   <div className="relative flex items-start mt-3 ">
                     <div className="flex items-center h-5 ">
                       <input

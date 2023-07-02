@@ -11,7 +11,7 @@ export const Header = () => {
                   Tiktok To Youtube Shorts 
               </h2>
               <p className="max-w-2xl mx-auto text-gray-400">
-              Share your TikTok link with me, and I'll work my wizardry to transform it into an awesome YouTube short. Get ready for some digital magic that'll make your video shine and captivate the online world!
+              Share your TikTok link with me, and I&apos;ll work my wizardry to transform it into an awesome YouTube short. Get ready for some digital magic that&apos;ll make your video shine and captivate the online world!
               </p>
               <Form/>
              

@@ -150,7 +150,7 @@ export const columns: ColumnDef<TTlink>[] = [
         
       )
     },
-    cell: ({ row }) => {
+    cell: function Cell({ row })  {
       const [DeleteModal, setDeleteModal] = useState<boolean>(false)
       const [UpdateModal, setUpdateModal] = useState<boolean>(false)
       return (

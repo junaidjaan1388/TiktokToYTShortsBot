@@ -16,7 +16,7 @@ app.use(express.json())
 try{
      connect(process.env.MONGO_URL!);
      console.log("Connected To MongoDB !")
-     cronjobFunc();
+     //cronjobFunc();
 }catch(e){
     console.log('Error While connecting to MongoDB!!')
     console.log(e)
