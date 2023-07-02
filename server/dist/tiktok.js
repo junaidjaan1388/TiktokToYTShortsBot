@@ -197,6 +197,9 @@ function HandleFromTiktok(tiktok_url, logo, filter, IdLink) {
                     }
                 }
             }
+            else {
+                throw new Error('Something went wrong while getting tiktok details');
+            }
         }));
     });
 }

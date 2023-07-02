@@ -29,22 +29,29 @@ export async function UploadShorts (filename:string,ShortTitle:string,desc:strin
    const hashtags:string = '#motivation #fitnessmotivation #motivationalquotes #gymmotivation #gym #workoutmotivation #motivational #success #successquotes #successmindset #positivity #hustle #mind #mindsetiseverything'
    //ila makanuch hashtags dir hadu par default mn a7ssn ydaro fconfig.json tji easy tbdl mn acc l acc
   console.log('UPLOADING ...')
-  const upload = await yt.studio.upload(file.buffer, {
-    title: ShortTitle,
-     description: desc || hashtags,
-    privacy: 'PRIVATE'
-  });
+  try{
+    const upload = await yt.studio.upload(file.buffer, {
+      title: ShortTitle,
+       description: desc || hashtags,
+      privacy: 'PUBLIC'
+    });
+    
   
-
-  console.info('Done!', upload);
-  if(upload.success){
-    console.log('Uploaded Succesfully')
-    await DeleteLink(LinkID);
-    return true
-
-  }else{
-    console.log('eerror while uploading')
-    return false
+    console.info('Done!', upload);
+    if(upload.success){
+      console.log('Uploaded Succesfully')
+      await DeleteLink(LinkID);
+      return true
+  
+    }else{
+      console.log('eerror while uploading')
+      return false
+    }
+  }catch(error){
+      console.log('Error While Uploading , '+error)
+      UploadShorts(filename,ShortTitle,desc,LinkID)
   }
+ 
   //delete file
 }
+//UploadShorts('output',"You are in danger of living a life so comfortable and soft, that you will die without knowing your true potential. (they don't know me son)",undefined,'64a03e30d043e6457f0f4042')

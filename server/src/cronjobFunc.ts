@@ -16,6 +16,7 @@ export const cronjobFunc = async () => {
                 // now change isWorking
                 await HandleFromTiktok(result?.tiktokLink!,result?.logo!,result?.filter!,result?.id)
                 console.log('Finished everything')
+                cronjobFunc()
             }catch{
                 //so in case of error stop isworking 
                 console.log('something went wrong while handling tiktok')

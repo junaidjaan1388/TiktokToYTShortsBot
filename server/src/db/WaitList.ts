@@ -50,6 +50,6 @@ interface ILinks {
   
   export const CreateLink = (values:ILinks) => new WaitList(values).save().then((link)=>console.log('saved Link : '+link))
 
-  export const DeleteLink = (id:string) => WaitList.findOneAndDelete({_id:id}).then(()=>console.log("Deleted Succesully"))
+  export const DeleteLink = (id:string) => WaitList.findOneAndDelete({_id:id}).then(()=>console.log("Deleted from db "+id))
 
   export const UpdateLink = (ttData:UpdateDataType)=> WaitList.findByIdAndUpdate(ttData.id,ttData)

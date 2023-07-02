@@ -17,6 +17,7 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const WaitList_1 = require("./db/WaitList");
+const cronjobFunc_1 = require("./cronjobFunc");
 const tiktok_1 = require("./tiktok");
 dotenv_1.default.config();
 const app = (0, express_1.default)();
@@ -26,7 +27,7 @@ app.use(express_1.default.json());
 try {
     (0, mongoose_1.connect)(process.env.MONGO_URL);
     console.log("Connected To MongoDB !");
-    // cronjobFunc();
+    (0, cronjobFunc_1.cronjobFunc)();
 }
 catch (e) {
     console.log('Error While connecting to MongoDB!!');
