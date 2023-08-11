@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { TTlink, columns } from "./columns"
 import { DataTable } from "./data-table"
 
@@ -13,8 +14,8 @@ export default async function TikTable() {
   const data = await getData()
 
   return (
-    <div className="container mx-auto py-10">
-      <DataTable columns={columns} data={data} />
-    </div>
+          <div className="container mx-auto py-10">
+           <DataTable columns={columns} data={data} />
+         </div>
   )
 }

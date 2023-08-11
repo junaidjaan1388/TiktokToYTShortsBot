@@ -5,7 +5,7 @@ import axios from 'axios'
 import toast, { Toaster } from 'react-hot-toast';
 import {ImagePlus , SlidersHorizontal} from 'lucide-react'
 import { useRouter } from 'next/navigation';
-import { useTransition } from 'react';
+import { useState, useTransition } from 'react';
 
 type FormData = {
     ttLink : string;
@@ -25,12 +25,14 @@ function Form() {
       const tiktokVideoRegex = /tiktok\.com(.*)\//;
       const router = useRouter();
       const [isPending, startTransition] = useTransition();
+      const [Sumbitstate,setSumbitState] = useState(false)
       
 
       const onSubmit = async (dataform:FormData) => {
         console.log(dataform)
         console.log(process.env.NEXT_PUBLIC_API_URL+'/AddNewLinkToWaitList')
         const toastId = toast.loading("Please wait...")
+        setSumbitState(true)
         try{
             const {data} = await axios.post(process.env.NEXT_PUBLIC_API_URL+'/AddNewLinkToWaitList', {
                 tiktokLink:dataform.ttLink,
@@ -42,7 +44,7 @@ function Form() {
                 id: toastId,
               });
               reset();
-
+              setSumbitState(false)
               startTransition(() => {
                 // Refresh the current route and fetch new data from the server without
                 // losing client-side browser or React state.
@@ -55,6 +57,7 @@ function Form() {
             toast.error('Something went wrong', {
                 id: toastId,
               });
+              setSumbitState(false)
         }
        
       }
@@ -108,14 +111,15 @@ function Form() {
                         </div>
                     </div>
                     <button
-                        className="group relative inline-block text-sm font-medium text-white focus:outline-none focus:ring mt-5"
+                        className={ `group relative inline-block text-sm font-medium text-white ${Sumbitstate && 'cursor-not-allowed'} focus:outline-none focus:ring mt-5`}
                         type="submit"
+                        disabled={Sumbitstate}
                         >
                         <span
-                            className="absolute inset-0 border border-violet-600 group-active:border-violet-500"
+                            className={`absolute inset-0 border border-violet-600 group-active:border-violet-500`}
                         ></span>
                         <span
-                            className="block border border-pruple-600 bg-violet-600 px-12 py-3 transition-transform active:border-pruple-500 active:bg-violet-500 group-hover:-translate-x-1 group-hover:-translate-y-1"
+                            className={`block border border-pruple-600 bg-violet-600  px-12 py-3 transition-transform active:border-pruple-500 active:bg-violet-500 group-hover:-translate-x-1 group-hover:-translate-y-1`}
                         >
                             Add Links
                         </span>
