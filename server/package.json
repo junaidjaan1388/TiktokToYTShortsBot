@@ -22,7 +22,7 @@
     "mongoose": "^7.3.0",
     "node-cron": "^3.0.2",
     "nodejs-file-downloader": "^4.12.1",
-    "youtubei.js": "^5.2.0"
+    "youtubei.js": "^8.2.0"
   },
   "devDependencies": {
     "@types/body-parser": "^1.19.2",

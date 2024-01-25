@@ -26,7 +26,7 @@ const ChangeIsWorkingState = (id, state) => exports.WaitList.findByIdAndUpdate(i
 exports.ChangeIsWorkingState = ChangeIsWorkingState;
 const CreateLink = (values) => new exports.WaitList(values).save().then((link) => console.log('saved Link : ' + link));
 exports.CreateLink = CreateLink;
-const DeleteLink = (id) => exports.WaitList.findOneAndDelete({ _id: id }).then(() => console.log("Deleted Succesully"));
+const DeleteLink = (id) => exports.WaitList.findOneAndDelete({ _id: id }).then(() => console.log("Deleted from db " + id));
 exports.DeleteLink = DeleteLink;
 const UpdateLink = (ttData) => exports.WaitList.findByIdAndUpdate(ttData.id, ttData);
 exports.UpdateLink = UpdateLink;

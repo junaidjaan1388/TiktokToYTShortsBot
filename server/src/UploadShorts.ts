@@ -28,7 +28,7 @@ export async function UploadShorts (filename:string,ShortTitle:string,desc:strin
   
    const hashtags:string = '#motivation #fitnessmotivation #motivationalquotes #gymmotivation #gym #workoutmotivation #motivational #success #successquotes #successmindset #positivity #hustle #mind #mindsetiseverything'
    //ila makanuch hashtags dir hadu par default mn a7ssn ydaro fconfig.json tji easy tbdl mn acc l acc
-  console.log('UPLOADING ...')
+  console.log(`UPLOADING ...`);
   try{
     const upload = await yt.studio.upload(file.buffer, {
       title: ShortTitle,

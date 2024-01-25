@@ -33,23 +33,30 @@ function UploadShorts(filename, ShortTitle, desc, LinkID) {
         const file = (0, fs_1.readFileSync)('./ffmpeg-auto/' + filename + '.mp4');
         const hashtags = '#motivation #fitnessmotivation #motivationalquotes #gymmotivation #gym #workoutmotivation #motivational #success #successquotes #successmindset #positivity #hustle #mind #mindsetiseverything';
         //ila makanuch hashtags dir hadu par default mn a7ssn ydaro fconfig.json tji easy tbdl mn acc l acc
-        console.log('UPLOADING ...');
-        const upload = yield yt.studio.upload(file.buffer, {
-            title: ShortTitle,
-            description: desc || hashtags,
-            privacy: 'PRIVATE'
-        });
-        console.info('Done!', upload);
-        if (upload.success) {
-            console.log('Uploaded Succesfully');
-            yield (0, WaitList_1.DeleteLink)(LinkID);
-            return true;
+        console.log(`UPLOADING ...`);
+        try {
+            const upload = yield yt.studio.upload(file.buffer, {
+                title: ShortTitle,
+                description: desc || hashtags,
+                privacy: 'PUBLIC'
+            });
+            console.info('Done!', upload);
+            if (upload.success) {
+                console.log('Uploaded Succesfully');
+                yield (0, WaitList_1.DeleteLink)(LinkID);
+                return true;
+            }
+            else {
+                console.log('eerror while uploading');
+                return false;
+            }
         }
-        else {
-            console.log('eerror while uploading');
-            return false;
+        catch (error) {
+            console.log('Error While Uploading , ' + error);
+            UploadShorts(filename, ShortTitle, desc, LinkID);
         }
         //delete file
     });
 }
 exports.UploadShorts = UploadShorts;
+//UploadShorts('output',"You are in danger of living a life so comfortable and soft, that you will die without knowing your true potential. (they don't know me son)",undefined,'64a03e30d043e6457f0f4042')
