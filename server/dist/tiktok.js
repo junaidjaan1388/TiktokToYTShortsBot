@@ -37,7 +37,7 @@ function RenderWithLogoAndFilter() {
                 '[1][0]scale2ref=w=iw/3:h=ow/mdar[logo][main]',
                 '[main][logo]overlay=x=(main_w-overlay_w)/2:y=(main_h-overlay_h)-10'
             ])
-                .outputOptions('-vcodec h264_nvenc')
+                // .outputOptions('-vcodec h264_nvenc')
                 .outputOptions('-c:v libx264')
                 .outputOptions('-c:a copy')
                 .output('ffmpeg-auto/logoded.mp4')
@@ -47,7 +47,6 @@ function RenderWithLogoAndFilter() {
                 yield AddFilterAndScaleUP('logoded');
             }))
                 .on('progress', function (progress) {
-                //console.log('Processing: ' + progress.percent.toFixed(2) + '%');
                 process.stdout.write('Processing: ' + progress.percent.toFixed(2) + '% \r');
             })
                 .on('error', (err) => {
@@ -67,7 +66,7 @@ function RenderWithLogoWithOutFilter() {
                 '[1][0]scale2ref=w=iw/3:h=ow/mdar[logo][main]',
                 '[main][logo]overlay=x=(main_w-overlay_w)/2:y=(main_h-overlay_h)-10'
             ])
-                .outputOptions('-vcodec h264_nvenc')
+                // .outputOptions('-vcodec h264_nvenc')
                 .outputOptions('-c:v libx264')
                 .outputOptions('-c:a copy')
                 .output('ffmpeg-auto/logoded.mp4')
@@ -96,9 +95,8 @@ function AddFilterAndScaleUP(filename) {
                 .videoFilters([
                 'scale=1440:2560:flags=lanczos,eq=contrast=1.1:brightness=-0.07:saturation=1.2,unsharp=7:7:1:7:7:0'
             ])
-                .outputOptions('-vcodec h264_nvenc')
+                // .outputOptions('-vcodec h264_nvenc')
                 .outputOptions('-r 60')
-                .outputOptions('-rc constqp')
                 .outputOptions('-qp 19')
                 .outputOptions('-c:a copy')
                 .output('ffmpeg-auto/output.mp4')
@@ -123,23 +121,24 @@ function ScaledOnly(filename) {
     return __awaiter(this, void 0, void 0, function* () {
         return new Promise((resolve, reject) => {
             (0, fluent_ffmpeg_1.default)('ffmpeg-auto/' + filename + '.mp4')
-                .videoFilters([
-                'scale=1440:2560:flags=lanczos,unsharp=7:7:1:7:7:0'
-            ])
-                .outputOptions('-vcodec h264_nvenc')
+                // .videoFilters([
+                //   'scale=1440:2560:flags=lanczos,unsharp=7:7:1:7:7:0'
+                // ])
+                // .outputOptions('-c:v h264_qsv')
                 .outputOptions('-r 60')
-                .outputOptions('-rc constqp')
                 .outputOptions('-qp 19')
                 .outputOptions('-c:a copy')
                 .output('ffmpeg-auto/output.mp4')
                 .on('end', () => __awaiter(this, void 0, void 0, function* () {
+                console.timeEnd("time : ");
                 console.log('Processing finished Ready To Upload');
                 yield (0, UploadShorts_1.UploadShorts)('output', Title, Description, LinkID);
                 resolve();
             }))
                 .on('progress', function (progress) {
+                var _a;
                 // console.log('Processing: ' + progress.percent.toFixed(2) + '%');
-                process.stdout.write('Processing: ' + progress.percent.toFixed(2) + '% \r');
+                process.stdout.write('Processing: ' + ((_a = progress === null || progress === void 0 ? void 0 : progress.percent) === null || _a === void 0 ? void 0 : _a.toFixed(2)) + '% \r');
             })
                 .on('error', (err) => {
                 console.error('Error:', err);
@@ -186,6 +185,7 @@ function HandleFromTiktok(tiktok_url, logo, filter, IdLink) {
                             yield AddFilterAndScaleUP('input');
                         }
                         if (!logo && !filter) {
+                            console.time("time : ");
                             console.log('Rendering With ScaleUP Only');
                             yield ScaledOnly('input');
                         }
@@ -206,7 +206,7 @@ function HandleFromTiktok(tiktok_url, logo, filter, IdLink) {
 exports.HandleFromTiktok = HandleFromTiktok;
 const GetTiktokDuration = (tiklink) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        return (0, get_video_duration_1.default)(tiklink);
+        return (0, get_video_duration_1.default)(tiklink, "/usr/bin/ffprobe");
     }
     catch (_a) {
         return 0;

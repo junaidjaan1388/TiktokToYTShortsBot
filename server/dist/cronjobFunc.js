@@ -22,7 +22,7 @@ const cronjobFunc = () => __awaiter(void 0, void 0, void 0, function* () {
             //makhdam ela walo you can start 
             const result = yield (0, WaitList_1.GetFirstWaitList)();
             console.log(result === null || result === void 0 ? void 0 : result.id);
-            yield (0, WaitList_1.ChangeIsWorkingState)(result === null || result === void 0 ? void 0 : result.id, true);
+            //await ChangeIsWorkingState(result?.id,true)
             try {
                 // now change isWorking
                 yield (0, tiktok_1.HandleFromTiktok)(result === null || result === void 0 ? void 0 : result.tiktokLink, result === null || result === void 0 ? void 0 : result.logo, result === null || result === void 0 ? void 0 : result.filter, result === null || result === void 0 ? void 0 : result.id);

@@ -24,7 +24,8 @@ export async function UploadShorts (filename:string,ShortTitle:string,desc:strin
 
   await yt.session.signIn(creds);
   
-  const file = readFileSync('./ffmpeg-auto/'+filename+'.mp4');
+  // const file = readFileSync('./ffmpeg-auto/'+filename+'.mp4');
+  const file = readFileSync('./ffmpeg-auto/input.mp4');
   
    const hashtags:string = '#motivation #fitnessmotivation #motivationalquotes #gymmotivation #gym #workoutmotivation #motivational #success #successquotes #successmindset #positivity #hustle #mind #mindsetiseverything'
    //ila makanuch hashtags dir hadu par default mn a7ssn ydaro fconfig.json tji easy tbdl mn acc l acc
@@ -32,7 +33,7 @@ export async function UploadShorts (filename:string,ShortTitle:string,desc:strin
   try{
     const upload = await yt.studio.upload(file.buffer, {
       title: ShortTitle,
-       description: desc || hashtags,
+      description: desc || hashtags,
       privacy: 'PUBLIC'
     });
     

@@ -30,7 +30,8 @@ function UploadShorts(filename, ShortTitle, desc, LinkID) {
             console.info('Credentials updated!', data);
         });
         yield yt.session.signIn(creds);
-        const file = (0, fs_1.readFileSync)('./ffmpeg-auto/' + filename + '.mp4');
+        // const file = readFileSync('./ffmpeg-auto/'+filename+'.mp4');
+        const file = (0, fs_1.readFileSync)('./ffmpeg-auto/input.mp4');
         const hashtags = '#motivation #fitnessmotivation #motivationalquotes #gymmotivation #gym #workoutmotivation #motivational #success #successquotes #successmindset #positivity #hustle #mind #mindsetiseverything';
         //ila makanuch hashtags dir hadu par default mn a7ssn ydaro fconfig.json tji easy tbdl mn acc l acc
         console.log(`UPLOADING ...`);

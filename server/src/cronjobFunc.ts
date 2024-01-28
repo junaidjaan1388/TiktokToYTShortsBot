@@ -11,7 +11,7 @@ export const cronjobFunc = async () => {
             //makhdam ela walo you can start 
             const result = await GetFirstWaitList();
             console.log(result?.id)
-            await ChangeIsWorkingState(result?.id,true)
+            //await ChangeIsWorkingState(result?.id,true)
             try{
                 // now change isWorking
                 await HandleFromTiktok(result?.tiktokLink!,result?.logo!,result?.filter!,result?.id)
