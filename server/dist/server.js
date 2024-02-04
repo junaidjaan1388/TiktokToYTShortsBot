@@ -18,6 +18,7 @@ const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const WaitList_1 = require("./db/WaitList");
 const cronjobFunc_1 = require("./cronjobFunc");
+const node_cron_1 = __importDefault(require("node-cron"));
 const tiktok_1 = require("./tiktok");
 dotenv_1.default.config();
 const app = (0, express_1.default)();
@@ -34,9 +35,9 @@ catch (e) {
     console.log(e);
 }
 //https://crontab.guru/#*/30_*_*_*_*
-// cron.schedule('*/30 * * * * ',()=>{
-//         cronjobFunc();
-// })
+node_cron_1.default.schedule('*/30 * * * * ', () => {
+    (0, cronjobFunc_1.cronjobFunc)();
+});
 app.post('/AddNewLinkToWaitList', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const tikInfo = yield (0, tiktok_1.GetTiktokInfo)(req.body.tiktokLink);
     const result = yield (0, WaitList_1.CreateLink)({

@@ -47,7 +47,8 @@ function RenderWithLogoAndFilter() {
                 yield AddFilterAndScaleUP('logoded');
             }))
                 .on('progress', function (progress) {
-                process.stdout.write('Processing: ' + progress.percent.toFixed(2) + '% \r');
+                if (progress.percent)
+                    process.stdout.write('Processing: ' + progress.percent.toFixed(2) + '% \r');
             })
                 .on('error', (err) => {
                 console.error('Error:', err);
@@ -121,9 +122,9 @@ function ScaledOnly(filename) {
     return __awaiter(this, void 0, void 0, function* () {
         return new Promise((resolve, reject) => {
             (0, fluent_ffmpeg_1.default)('ffmpeg-auto/' + filename + '.mp4')
-                // .videoFilters([
-                //   'scale=1440:2560:flags=lanczos,unsharp=7:7:1:7:7:0'
-                // ])
+                .videoFilters([
+                'scale=1440:2560:flags=lanczos,unsharp=7:7:1:7:7:0'
+            ])
                 // .outputOptions('-c:v h264_qsv')
                 .outputOptions('-r 60')
                 .outputOptions('-qp 19')

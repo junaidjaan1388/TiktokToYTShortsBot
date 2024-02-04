@@ -25,9 +25,9 @@ try{
 
 
 //https://crontab.guru/#*/30_*_*_*_*
-// cron.schedule('*/30 * * * * ',()=>{
-//         cronjobFunc();
-// })
+cron.schedule('*/30 * * * * ',()=>{
+        cronjobFunc();
+})
 
 
 app.post('/AddNewLinkToWaitList',async (req:express.Request,res:express.Response)=>{

@@ -34,7 +34,8 @@ async function RenderWithLogoAndFilter() {
       await AddFilterAndScaleUP('logoded');
     })
     .on('progress', function(progress) {
-      process.stdout.write('Processing: ' + progress.percent.toFixed(2) + '% \r')
+      if (progress.percent)
+        process.stdout.write('Processing: ' + progress.percent.toFixed(2) + '% \r')
     })
     .on('error', (err) => {
       console.error('Error:', err);
@@ -111,9 +112,9 @@ async function AddFilterAndScaleUP(filename:string){
 async function ScaledOnly(filename:string){
   return new Promise<void>((resolve,reject)=>{
     ffmpeg('ffmpeg-auto/'+filename+'.mp4')
-  // .videoFilters([
-  //   'scale=1440:2560:flags=lanczos,unsharp=7:7:1:7:7:0'
-  // ])
+  .videoFilters([
+    'scale=1440:2560:flags=lanczos,unsharp=7:7:1:7:7:0'
+  ])
   // .outputOptions('-c:v h264_qsv')
   .outputOptions('-r 60')
   .outputOptions('-qp 19')
