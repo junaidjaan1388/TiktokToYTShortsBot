@@ -160,10 +160,10 @@ function HandleFromTiktok(tiktok_url, logo, filter, IdLink) {
                     Description = ((_c = result.result.description.match(/#[^\s#]+/g)) === null || _c === void 0 ? void 0 : _c.join(' ')) || undefined;
                     LinkID = IdLink; //id dyal link f mongodb bsh npassih luploadShorts bsh ila tuploada n7ydu 
                     const downloader = new nodejs_file_downloader_1.default({
-                        url: (_d = result.result) === null || _d === void 0 ? void 0 : _d.video[0],
-                        directory: "./ffmpeg-auto",
+                        url: (_d = result.result) === null || _d === void 0 ? void 0 : _d.video[0], //If the file name already exists, a new file with the name 200MB1.zip is created.
+                        directory: "./ffmpeg-auto", //This folder will be created, if it doesn't exist.   
                         fileName: 'input.mp4',
-                        cloneFiles: false,
+                        cloneFiles: false, //This will cause the downloader to re-write an existing file.
                         maxAttempts: 3,
                         onProgress: function (percentage, chunk, remainingSize) {
                             //Gets called with each chunk.

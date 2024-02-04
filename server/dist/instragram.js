@@ -34,7 +34,7 @@ function DownloadReel(url, desc) {
         const filename = 'Motivation-N' + Math.floor(Math.random() * 10000);
         const downloader = new nodejs_file_downloader_1.default({
             url: url,
-            directory: "./video/",
+            directory: "./video/", //Sub directories will also be automatically created if they do not exist.
             fileName: `${filename}.mp4`,
         });
         try {
