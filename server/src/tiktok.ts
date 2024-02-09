@@ -1,4 +1,6 @@
 import { path as ffmpegPath } from '@ffmpeg-installer/ffmpeg';
+import {path as ffmpegProbe} from '@ffprobe-installer/ffprobe';
+
 import ffmpeg from 'fluent-ffmpeg';
 import { TiktokDL } from "@tobyg74/tiktok-api-dl"
 import Downloader from "nodejs-file-downloader"
@@ -6,6 +8,7 @@ import { UploadShorts } from './UploadShorts';
 import getVideoDurationInSeconds from 'get-video-duration';
 
 ffmpeg.setFfmpegPath(ffmpegPath);
+ffmpeg.setFfprobePath(ffmpegProbe);
 
 let Title :string ;
 let Description :string | undefined ;
@@ -204,7 +207,7 @@ export async function HandleFromTiktok(tiktok_url:string,logo:boolean,filter:boo
 
   const GetTiktokDuration = async (tiklink:string) => {
         try{
-            return getVideoDurationInSeconds(tiklink,"/usr/bin/ffprobe")
+            return getVideoDurationInSeconds(tiklink)
         }catch{
             return 0
         }

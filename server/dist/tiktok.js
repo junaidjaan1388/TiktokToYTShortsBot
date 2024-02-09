@@ -207,7 +207,7 @@ function HandleFromTiktok(tiktok_url, logo, filter, IdLink) {
 exports.HandleFromTiktok = HandleFromTiktok;
 const GetTiktokDuration = (tiklink) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        return (0, get_video_duration_1.default)(tiklink, "/usr/bin/ffprobe");
+        return (0, get_video_duration_1.default)(tiklink);
     }
     catch (_a) {
         return 0;
