@@ -9,7 +9,8 @@ interface ILinks {
     logo: boolean;
     filter: boolean;
     duration:number;
-    isWorking:boolean
+    isWorking:boolean;
+    type:string
   }
 
   const WaitListSchema = new Schema<ILinks>({
@@ -21,7 +22,7 @@ interface ILinks {
     filter: { type: Boolean, required: true },
     duration: { type: Number, required: true },
     isWorking: { type: Boolean, required: true },
-    
+    type : { type :  String, required: true}
   },
   { timestamps: true }
   );

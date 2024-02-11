@@ -6,6 +6,7 @@ import { TiktokDL } from "@tobyg74/tiktok-api-dl"
 import Downloader from "nodejs-file-downloader"
 import { UploadShorts } from './UploadShorts';
 import getVideoDurationInSeconds from 'get-video-duration';
+import { GetReelDetailsV2 } from './instagram';
 
 ffmpeg.setFfmpegPath(ffmpegPath);
 ffmpeg.setFfprobePath(ffmpegProbe);
@@ -142,6 +143,36 @@ async function ScaledOnly(filename:string){
   
 }
 
+async function HandleRenderLogic(downloader:Downloader,logo:boolean,filter:boolean)
+{
+  try {
+    const {filePath,downloadStatus} = await downloader.download(); //Downloader.download() resolves with some useful properties.
+
+    console.log("Download Tiktok Completed");
+    if(logo && filter) {
+      console.log('Rendering With Logo + Filter + ScaleUP ')
+      await RenderWithLogoAndFilter();
+    }
+    if(logo && !filter){
+      console.log('Rendering With Logo + ScaleUP ')
+      await RenderWithLogoWithOutFilter()
+    }
+    if(!logo && filter){
+      console.log('Rendering With Filter + ScaleUP ')
+      await AddFilterAndScaleUP('input')
+    }
+    if(!logo && !filter){
+      console.time("time : ");
+      console.log('Rendering With ScaleUP Only')
+      await ScaledOnly('input')
+    }
+    
+} catch (error) {
+    //IMPORTANT: Handle a possible error. An error is thrown in case of network errors, or status codes of 400 and above.
+    //Note that if the maxAttempts is set to higher than 1, the error is thrown only if all attempts fail.
+    console.log("Download failed", error);
+}
+}
 
 export async function HandleFromTiktok(tiktok_url:string,logo:boolean,filter:boolean,IdLink:string){
 
@@ -165,45 +196,38 @@ export async function HandleFromTiktok(tiktok_url:string,logo:boolean,filter:boo
                           },
             
                     });
-                    try {
-                        const {filePath,downloadStatus} = await downloader.download(); //Downloader.download() resolves with some useful properties.
-            
-                        console.log("Download Tiktok Completed");
-                        if(logo && filter) {
-                          console.log('Rendering With Logo + Filter + ScaleUP ')
-                          await RenderWithLogoAndFilter();
-                        }
-                        if(logo && !filter){
-                          console.log('Rendering With Logo + ScaleUP ')
-                          await RenderWithLogoWithOutFilter()
-                        }
-                        if(!logo && filter){
-                          console.log('Rendering With Filter + ScaleUP ')
-                          await AddFilterAndScaleUP('input')
-                        }
-                        if(!logo && !filter){
-                          console.time("time : ");
-                          console.log('Rendering With ScaleUP Only')
-                          await ScaledOnly('input')
-                        }
-                        
-                    } catch (error) {
-                        //IMPORTANT: Handle a possible error. An error is thrown in case of network errors, or status codes of 400 and above.
-                        //Note that if the maxAttempts is set to higher than 1, the error is thrown only if all attempts fail.
-                        console.log("Download failed", error);
-                    }
+                    HandleRenderLogic(downloader,logo,filter);
                 }
             }else{
               throw new Error('Something went wrong while getting tiktok details');
             }
         })
-
-        
-       
-
-        
-
 }
+
+
+export async function HandleFromInstagram(ReelUrl:string,logo:boolean,filter:boolean,mongoId:string)
+{
+  const result = await GetReelDetailsV2(ReelUrl)
+  if (result)
+  {
+    Title = result.title
+    Description = result.description
+    LinkID = mongoId
+    const downloader = new Downloader({
+        url: result.video,
+        directory: "./ffmpeg-auto",
+        fileName:'input.mp4',
+        cloneFiles:false,
+        maxAttempts:3,
+        onProgress: function (percentage, chunk, remainingSize) {
+          //Gets called with each chunk.
+          process.stdout.write("Downloading tiktok % "+ percentage + "\r");
+        },
+    });
+    HandleRenderLogic(downloader,logo,filter)
+  }
+}
+
 
   const GetTiktokDuration = async (tiklink:string) => {
         try{

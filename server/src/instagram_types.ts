@@ -5,7 +5,7 @@ export interface igTypes {
   }
   
   export interface Data {
-    shortcode_media: ShortcodeMedia
+    xdt_shortcode_media: ShortcodeMedia
   }
   
   export interface ShortcodeMedia {

@@ -1,5 +1,5 @@
 import { ChangeIsWorkingState, CheckifisWorking, GetAllWaitList, GetFirstWaitList, GetWaitListCount } from "./db/WaitList"
-import { HandleFromTiktok } from "./tiktok";
+import { HandleFromInstagram, HandleFromTiktok } from "./tiktok";
 //
 export const cronjobFunc = async () => {
     // hadi function li ghatkhdm kola 30 min
@@ -14,9 +14,12 @@ export const cronjobFunc = async () => {
             //await ChangeIsWorkingState(result?.id,true)
             try{
                 // now change isWorking
-                await HandleFromTiktok(result?.tiktokLink!,result?.logo!,result?.filter!,result?.id)
+                if (result?.type == 'tiktok')
+                    await HandleFromTiktok(result?.tiktokLink!,result?.logo!,result?.filter!,result?.id)
+                else if (result?.type == 'instagram')
+                    await HandleFromInstagram(result?.tiktokLink!,result?.logo!,result?.filter!,result?.id)
                 console.log('Finished everything')
-                cronjobFunc()
+               // cronjobFunc()
             }catch{
                 //so in case of error stop isworking 
                 console.log('something went wrong while handling tiktok')

@@ -12,6 +12,20 @@ type FormData = {
     filter : boolean;
     logo   : boolean
 }
+
+function getLinkType(link: string): 'tiktok' | 'instagram' | 'unknown' {
+  const tiktokVideoRegex = /tiktok\.com(.*)\//;
+  const instagramVideoRegex = /instagram\.com(.*)\//;
+
+  if (tiktokVideoRegex.test(link)) {
+      return 'tiktok';
+  } else if (instagramVideoRegex.test(link)) {
+      return 'instagram';
+  } else {
+      return 'unknown';
+  }
+}
+
 function Form() {
     const {
         register,
@@ -22,7 +36,8 @@ function Form() {
       } = useForm<FormData>();
       
 
-      const tiktokVideoRegex = /tiktok\.com(.*)\//;
+      const tiktokVideoRegex = /(tiktok\.com|instagram\.com)(.*)\//;
+      const instaregex = /\/(?:p|reel|reels)\/([A-Za-z0-9_-]+)\/?(\?.*)?/;
       const router = useRouter();
       const [isPending, startTransition] = useTransition();
       const [Sumbitstate,setSumbitState] = useState(false)
@@ -34,10 +49,26 @@ function Form() {
         const toastId = toast.loading("Please wait...")
         setSumbitState(true)
         try{
+            // if (getLinkType(dataform.ttLink) == 'instagram')
+            // {
+            //   const match = dataform.ttLink.match(/\/(?:p|reel|reels)\/([A-Za-z0-9_-]+)\/?(\?.*)?/);
+            //   console.log(match);
+            //   if (!match)
+            //   {
+            //     console.log("wrong insta link")
+            //     toast.error('Wrong Instgram Link', {
+            //       id: toastId,
+            //     });
+            //     setSumbitState(false)
+            //   }
+              
+            // }
+
             const {data} = await axios.post(process.env.NEXT_PUBLIC_API_URL+'/AddNewLinkToWaitList', {
                 tiktokLink:dataform.ttLink,
                 logo:dataform.logo,
                 filter:dataform.filter,
+                type : getLinkType(dataform.ttLink)
               })
 
               toast.success('Tiktok Link Was Saved!', {
@@ -81,8 +112,8 @@ function Form() {
                <div className="relative justify-center items-center gap-x-3 ">
                   <input {...register("ttLink",{required:true,
                     pattern: {
-                        value: tiktokVideoRegex,
-                        message: 'Invalid TikTok video link',
+                        value: tiktokVideoRegex ,
+                        message: 'Invalid TikTok/Instagram video link',
                       },
                     
                 })}  type="text" id="helper-text" aria-describedby="helper-text-explanation" className="block p-2.5 w-full z-20  bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Enter your tiktok Link">

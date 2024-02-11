@@ -4,8 +4,10 @@ import express,{Application} from 'express';
 import cors from 'cors';
 import { CreateLink, GetAllWaitList, GetFirstWaitList, DeleteLink, CheckifisWorking, UpdateLink } from './db/WaitList';
 import { cronjobFunc } from './cronjobFunc';
-import cron from 'node-cron'
+import cron from 'node-cron';
 import { GetTiktokInfo } from './tiktok';
+import { GetReelDetailsV2 } from './instagram';
+
 dotenv.config()
 const app: Application = express();
 
@@ -31,21 +33,46 @@ cron.schedule('*/30 * * * * ',()=>{
 
 
 app.post('/AddNewLinkToWaitList',async (req:express.Request,res:express.Response)=>{
-    const tikInfo = await GetTiktokInfo(req.body.tiktokLink)
-    const result = await CreateLink({
-        tiktokLink:req.body.tiktokLink,
-        title : tikInfo?.Title,
-        description : tikInfo?.Description,
-        dynamic_cover : tikInfo?.dynamic_cover,
-        logo:req.body.logo,
-        filter:req.body.filter,
-        duration:tikInfo?.duration as number,
-        isWorking:false
-     }).then(()=>res.send(true))
-       .catch(()=>{
-        return res.status(404).json({ success: false, message: 'An error occurred, please try again later' });
+    console.log(req.body)
+    if (req.body.type == 'tiktok')
+    {
+        const tikInfo = await GetTiktokInfo(req.body.tiktokLink)
+        await CreateLink({
+            tiktokLink:req.body.tiktokLink,
+            title : tikInfo?.Title,
+            description : tikInfo?.Description,
+            dynamic_cover : tikInfo?.dynamic_cover,
+            logo:req.body.logo,
+            filter:req.body.filter,
+            duration:tikInfo?.duration as number,
+            isWorking:false,
+            type : req.body.type
+         }).then(()=>res.send(true))
+           .catch(()=>{
+            return res.status(404).json({ success: false, message: 'An error occurred, please try again later' });
+        })
+    }
+    else if (req.body.type == 'instagram')
+    {
+        const reelInfo = await GetReelDetailsV2(req.body.tiktokLink);
+        await CreateLink({
+            tiktokLink:req.body.tiktokLink,
+            title : reelInfo?.title,
+            description : reelInfo?.description,
+            dynamic_cover : reelInfo?.dynamic_cover,
+            logo:req.body.logo,
+            filter:req.body.filter,
+            duration: reelInfo?.duration !== undefined ? parseFloat(reelInfo?.duration) : 0,
+            isWorking:false,
+            type : req.body.type
+         }).then(()=>res.send(true))
+           .catch(()=>{
+            return res.status(404).json({ success: false, message: 'An error occurred, please try again later' });
+        })
 
-    }) 
+    }
+        
+    console.log("type => " + req.body.type)
 })
 
 app.get('/GetWaitList',async (req:express.Request,res:express.Response)=>{

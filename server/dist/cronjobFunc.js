@@ -25,9 +25,12 @@ const cronjobFunc = () => __awaiter(void 0, void 0, void 0, function* () {
             //await ChangeIsWorkingState(result?.id,true)
             try {
                 // now change isWorking
-                yield (0, tiktok_1.HandleFromTiktok)(result === null || result === void 0 ? void 0 : result.tiktokLink, result === null || result === void 0 ? void 0 : result.logo, result === null || result === void 0 ? void 0 : result.filter, result === null || result === void 0 ? void 0 : result.id);
+                if ((result === null || result === void 0 ? void 0 : result.type) == 'tiktok')
+                    yield (0, tiktok_1.HandleFromTiktok)(result === null || result === void 0 ? void 0 : result.tiktokLink, result === null || result === void 0 ? void 0 : result.logo, result === null || result === void 0 ? void 0 : result.filter, result === null || result === void 0 ? void 0 : result.id);
+                else if ((result === null || result === void 0 ? void 0 : result.type) == 'instagram')
+                    yield (0, tiktok_1.HandleFromInstagram)(result === null || result === void 0 ? void 0 : result.tiktokLink, result === null || result === void 0 ? void 0 : result.logo, result === null || result === void 0 ? void 0 : result.filter, result === null || result === void 0 ? void 0 : result.id);
                 console.log('Finished everything');
-                (0, exports.cronjobFunc)();
+                // cronjobFunc()
             }
             catch (_a) {
                 //so in case of error stop isworking 

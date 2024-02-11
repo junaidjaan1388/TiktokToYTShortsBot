@@ -46,7 +46,7 @@ export const columns: ColumnDef<TTlink>[] = [
     cell:({row})=> {
         return (
             <a  target="_blank" href={row.getValue('tiktokLink')} rel="noopener noreferrer">
-                    <Image src={row.original.dynamic_cover || './template.jpg'} alt='david' width={120} height={200} />
+                    <Image src={row.original.dynamic_cover || 'https://p16-sign-useast2a.tiktokcdn.com/obj/tos-useast2a-p-0037-euttp/441c8be4a6d24e8d921e6d3728cf31a4_1707487278?lk3s=d05b14bd&x-expires=1707670800&x-signature=H7gKmbUxrzU5Wxl6HUW5qMVehMY%3D&s=FEED&se=false&sh=&sc=dynamic_cover&l=20240210174951A0C63BE5A9930E7505F7'} alt='david' width={120} height={200} />
             </a>
         )
     }

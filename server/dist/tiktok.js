@@ -12,14 +12,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.GetTiktokInfo = exports.HandleFromTiktok = void 0;
+exports.GetTiktokInfo = exports.HandleFromInstagram = exports.HandleFromTiktok = void 0;
 const ffmpeg_1 = require("@ffmpeg-installer/ffmpeg");
+const ffprobe_1 = require("@ffprobe-installer/ffprobe");
 const fluent_ffmpeg_1 = __importDefault(require("fluent-ffmpeg"));
 const tiktok_api_dl_1 = require("@tobyg74/tiktok-api-dl");
 const nodejs_file_downloader_1 = __importDefault(require("nodejs-file-downloader"));
 const UploadShorts_1 = require("./UploadShorts");
 const get_video_duration_1 = __importDefault(require("get-video-duration"));
+const instagram_1 = require("./instagram");
 fluent_ffmpeg_1.default.setFfmpegPath(ffmpeg_1.path);
+fluent_ffmpeg_1.default.setFfprobePath(ffprobe_1.path);
 let Title;
 let Description;
 let LinkID;
@@ -149,6 +152,36 @@ function ScaledOnly(filename) {
         });
     });
 }
+function HandleRenderLogic(downloader, logo, filter) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const { filePath, downloadStatus } = yield downloader.download(); //Downloader.download() resolves with some useful properties.
+            console.log("Download Tiktok Completed");
+            if (logo && filter) {
+                console.log('Rendering With Logo + Filter + ScaleUP ');
+                yield RenderWithLogoAndFilter();
+            }
+            if (logo && !filter) {
+                console.log('Rendering With Logo + ScaleUP ');
+                yield RenderWithLogoWithOutFilter();
+            }
+            if (!logo && filter) {
+                console.log('Rendering With Filter + ScaleUP ');
+                yield AddFilterAndScaleUP('input');
+            }
+            if (!logo && !filter) {
+                console.time("time : ");
+                console.log('Rendering With ScaleUP Only');
+                yield ScaledOnly('input');
+            }
+        }
+        catch (error) {
+            //IMPORTANT: Handle a possible error. An error is thrown in case of network errors, or status codes of 400 and above.
+            //Note that if the maxAttempts is set to higher than 1, the error is thrown only if all attempts fail.
+            console.log("Download failed", error);
+        }
+    });
+}
 function HandleFromTiktok(tiktok_url, logo, filter, IdLink) {
     return __awaiter(this, void 0, void 0, function* () {
         return (0, tiktok_api_dl_1.TiktokDL)(tiktok_url).then((result) => __awaiter(this, void 0, void 0, function* () {
@@ -170,32 +203,7 @@ function HandleFromTiktok(tiktok_url, logo, filter, IdLink) {
                             process.stdout.write("Downloading tiktok % " + percentage + "\r");
                         },
                     });
-                    try {
-                        const { filePath, downloadStatus } = yield downloader.download(); //Downloader.download() resolves with some useful properties.
-                        console.log("Download Tiktok Completed");
-                        if (logo && filter) {
-                            console.log('Rendering With Logo + Filter + ScaleUP ');
-                            yield RenderWithLogoAndFilter();
-                        }
-                        if (logo && !filter) {
-                            console.log('Rendering With Logo + ScaleUP ');
-                            yield RenderWithLogoWithOutFilter();
-                        }
-                        if (!logo && filter) {
-                            console.log('Rendering With Filter + ScaleUP ');
-                            yield AddFilterAndScaleUP('input');
-                        }
-                        if (!logo && !filter) {
-                            console.time("time : ");
-                            console.log('Rendering With ScaleUP Only');
-                            yield ScaledOnly('input');
-                        }
-                    }
-                    catch (error) {
-                        //IMPORTANT: Handle a possible error. An error is thrown in case of network errors, or status codes of 400 and above.
-                        //Note that if the maxAttempts is set to higher than 1, the error is thrown only if all attempts fail.
-                        console.log("Download failed", error);
-                    }
+                    HandleRenderLogic(downloader, logo, filter);
                 }
             }
             else {
@@ -205,6 +213,29 @@ function HandleFromTiktok(tiktok_url, logo, filter, IdLink) {
     });
 }
 exports.HandleFromTiktok = HandleFromTiktok;
+function HandleFromInstagram(ReelUrl, logo, filter, mongoId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const result = yield (0, instagram_1.GetReelDetailsV2)(ReelUrl);
+        if (result) {
+            Title = result.title;
+            Description = result.description;
+            LinkID = mongoId;
+            const downloader = new nodejs_file_downloader_1.default({
+                url: result.video,
+                directory: "./ffmpeg-auto",
+                fileName: 'input.mp4',
+                cloneFiles: false,
+                maxAttempts: 3,
+                onProgress: function (percentage, chunk, remainingSize) {
+                    //Gets called with each chunk.
+                    process.stdout.write("Downloading tiktok % " + percentage + "\r");
+                },
+            });
+            HandleRenderLogic(downloader, logo, filter);
+        }
+    });
+}
+exports.HandleFromInstagram = HandleFromInstagram;
 const GetTiktokDuration = (tiklink) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         return (0, get_video_duration_1.default)(tiklink);

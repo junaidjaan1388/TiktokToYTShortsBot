@@ -11,6 +11,7 @@ const WaitListSchema = new mongoose_1.Schema({
     filter: { type: Boolean, required: true },
     duration: { type: Number, required: true },
     isWorking: { type: Boolean, required: true },
+    type: { type: String, required: true }
 }, { timestamps: true });
 //MODAL 
 exports.WaitList = (0, mongoose_1.model)('waitlists', WaitListSchema);

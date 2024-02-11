@@ -20,6 +20,7 @@ const WaitList_1 = require("./db/WaitList");
 const cronjobFunc_1 = require("./cronjobFunc");
 const node_cron_1 = __importDefault(require("node-cron"));
 const tiktok_1 = require("./tiktok");
+const instagram_1 = require("./instagram");
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 8080;
@@ -39,20 +40,42 @@ node_cron_1.default.schedule('*/30 * * * * ', () => {
     (0, cronjobFunc_1.cronjobFunc)();
 });
 app.post('/AddNewLinkToWaitList', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const tikInfo = yield (0, tiktok_1.GetTiktokInfo)(req.body.tiktokLink);
-    const result = yield (0, WaitList_1.CreateLink)({
-        tiktokLink: req.body.tiktokLink,
-        title: tikInfo === null || tikInfo === void 0 ? void 0 : tikInfo.Title,
-        description: tikInfo === null || tikInfo === void 0 ? void 0 : tikInfo.Description,
-        dynamic_cover: tikInfo === null || tikInfo === void 0 ? void 0 : tikInfo.dynamic_cover,
-        logo: req.body.logo,
-        filter: req.body.filter,
-        duration: tikInfo === null || tikInfo === void 0 ? void 0 : tikInfo.duration,
-        isWorking: false
-    }).then(() => res.send(true))
-        .catch(() => {
-        return res.status(404).json({ success: false, message: 'An error occurred, please try again later' });
-    });
+    console.log(req.body);
+    if (req.body.type == 'tiktok') {
+        const tikInfo = yield (0, tiktok_1.GetTiktokInfo)(req.body.tiktokLink);
+        yield (0, WaitList_1.CreateLink)({
+            tiktokLink: req.body.tiktokLink,
+            title: tikInfo === null || tikInfo === void 0 ? void 0 : tikInfo.Title,
+            description: tikInfo === null || tikInfo === void 0 ? void 0 : tikInfo.Description,
+            dynamic_cover: tikInfo === null || tikInfo === void 0 ? void 0 : tikInfo.dynamic_cover,
+            logo: req.body.logo,
+            filter: req.body.filter,
+            duration: tikInfo === null || tikInfo === void 0 ? void 0 : tikInfo.duration,
+            isWorking: false,
+            type: req.body.type
+        }).then(() => res.send(true))
+            .catch(() => {
+            return res.status(404).json({ success: false, message: 'An error occurred, please try again later' });
+        });
+    }
+    else if (req.body.type == 'instagram') {
+        const reelInfo = yield (0, instagram_1.GetReelDetailsV2)(req.body.tiktokLink);
+        yield (0, WaitList_1.CreateLink)({
+            tiktokLink: req.body.tiktokLink,
+            title: reelInfo === null || reelInfo === void 0 ? void 0 : reelInfo.title,
+            description: reelInfo === null || reelInfo === void 0 ? void 0 : reelInfo.description,
+            dynamic_cover: reelInfo === null || reelInfo === void 0 ? void 0 : reelInfo.dynamic_cover,
+            logo: req.body.logo,
+            filter: req.body.filter,
+            duration: (reelInfo === null || reelInfo === void 0 ? void 0 : reelInfo.duration) !== undefined ? parseFloat(reelInfo === null || reelInfo === void 0 ? void 0 : reelInfo.duration) : 0,
+            isWorking: false,
+            type: req.body.type
+        }).then(() => res.send(true))
+            .catch(() => {
+            return res.status(404).json({ success: false, message: 'An error occurred, please try again later' });
+        });
+    }
+    console.log("type => " + req.body.type);
 }));
 app.get('/GetWaitList', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield (0, WaitList_1.GetAllWaitList)();
