@@ -1,5 +1,10 @@
 version: '3.9'
 
+#run this command first (to fix nextjs building cache issue)
+#docker-compose up -d backend
+#then run 
+#docker-compose up -d frontend
+
 services:
  backend:
   container_name: backend
@@ -7,6 +12,8 @@ services:
   build:
    context: ./server
    dockerfile: Dockerfile
+   network : host
+  network_mode : host
   ports:
    - 8080:8080
   restart: always
@@ -17,12 +24,10 @@ services:
   build:
    context: ./client
    dockerfile: Dockerfile
+   network : host
+  network_mode : host
   ports:
    - 3000:3000
   restart: always
   depends_on:
-   - backend
-
-# networks:
-#  app-network:
-#   driver: bridge
+      - backend
