@@ -1,5 +1,9 @@
 FROM node:18.17.0
 
+USER root
+
+RUN apt-get update && apt-get install -y nscd
+
 WORKDIR /usr/src/app
 
 COPY package*.json ./
