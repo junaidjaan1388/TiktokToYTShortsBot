@@ -28,9 +28,9 @@ async function RenderWithLogoAndFilter() {
       '[1][0]scale2ref=w=iw/3:h=ow/mdar[logo][main]',
       '[main][logo]overlay=x=(main_w-overlay_w)/2:y=(main_h-overlay_h)-10'
     ])
-    // .outputOptions('-vcodec h264_nvenc')
     .videoCodec('libx264')
     .audioCodec('copy')
+    .outputOptions('-qp 19')
     .output('ffmpeg-auto/logoded.mp4')
     .on('end',async () => {
       console.log('Processing finished , Logo Added');
@@ -61,6 +61,7 @@ async function RenderWithLogoWithOutFilter() {
     // .outputOptions('-vcodec h264_nvenc')
     .videoCodec('libx264')
     .audioCodec('copy')
+    .outputOptions('-qp 19')
     .output('ffmpeg-auto/logoded.mp4')
     .on('end',async () => {
       console.log('Processing finished , Logo Added');
@@ -91,6 +92,7 @@ async function AddFilterAndScaleUP(filename:string){
     ])
     .videoCodec('libx264')
     .audioCodec('copy')
+    .outputOptions('-qp 19')
     .output('ffmpeg-auto/output.mp4')
     .on('end', async() => {
       console.log('Processing finished Ready To Upload');
@@ -121,6 +123,7 @@ async function ScaledOnly(filename:string){
     'scale=1440:2560:flags=lanczos,setdar=9/16,unsharp=7:7:1:7:7:0'
   ])
   .duration(59)
+  .outputOptions('-qp 19')
   .output('ffmpeg-auto/output.mp4')
   .on('end', async () => {
     console.timeEnd("time : ");
