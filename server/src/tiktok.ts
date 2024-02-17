@@ -29,8 +29,8 @@ async function RenderWithLogoAndFilter() {
       '[main][logo]overlay=x=(main_w-overlay_w)/2:y=(main_h-overlay_h)-10'
     ])
     // .outputOptions('-vcodec h264_nvenc')
-    .outputOptions('-c:v libx264')
-    .outputOptions('-c:a copy')
+    .videoCodec('libx264')
+    .audioCodec('copy')
     .output('ffmpeg-auto/logoded.mp4')
     .on('end',async () => {
       console.log('Processing finished , Logo Added');
@@ -59,8 +59,8 @@ async function RenderWithLogoWithOutFilter() {
       '[main][logo]overlay=x=(main_w-overlay_w)/2:y=(main_h-overlay_h)-10'
     ])
     // .outputOptions('-vcodec h264_nvenc')
-    .outputOptions('-c:v libx264')
-    .outputOptions('-c:a copy')
+    .videoCodec('libx264')
+    .audioCodec('copy')
     .output('ffmpeg-auto/logoded.mp4')
     .on('end',async () => {
       console.log('Processing finished , Logo Added');
@@ -89,10 +89,8 @@ async function AddFilterAndScaleUP(filename:string){
     .videoFilters([
       'scale=1440:2560:flags=lanczos,eq=contrast=1.1:brightness=-0.07:saturation=1.2,unsharp=7:7:1:7:7:0'
     ])
-    // .outputOptions('-vcodec h264_nvenc')
-    .outputOptions('-r 60')
-    .outputOptions('-qp 19')
-    .outputOptions('-c:a copy')
+    .videoCodec('libx264')
+    .audioCodec('copy')
     .output('ffmpeg-auto/output.mp4')
     .on('end', async() => {
       console.log('Processing finished Ready To Upload');
@@ -111,19 +109,18 @@ async function AddFilterAndScaleUP(filename:string){
     })
     .run();
   })
-    
 }
 
 async function ScaledOnly(filename:string){
   return new Promise<void>((resolve,reject)=>{
     ffmpeg('ffmpeg-auto/'+filename+'.mp4')
-  .videoFilters([
-    'scale=1440:2560:flags=lanczos,unsharp=7:7:1:7:7:0'
-  ])
   // .outputOptions('-c:v h264_qsv')
-  .outputOptions('-r 60')
-  .outputOptions('-qp 19')
-  .outputOptions('-c:a copy')
+  .videoCodec('libx264')
+  .audioCodec('copy')
+  .videoFilters([
+    'scale=1440:2560:flags=lanczos,setdar=9/16,unsharp=7:7:1:7:7:0'
+  ])
+  .duration(59)
   .output('ffmpeg-auto/output.mp4')
   .on('end', async () => {
     console.timeEnd("time : ");
