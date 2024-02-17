@@ -50,8 +50,8 @@ function RenderWithLogoAndFilter() {
                 yield AddFilterAndScaleUP('logoded');
             }))
                 .on('progress', function (progress) {
-                if (progress.percent)
-                    process.stdout.write('Processing: ' + progress.percent.toFixed(2) + '% \r');
+                if (progress && (progress === null || progress === void 0 ? void 0 : progress.percent))
+                    console.log('Processing: ' + progress.percent.toFixed(2) + '%');
             })
                 .on('error', (err) => {
                 console.error('Error:', err);
@@ -81,8 +81,8 @@ function RenderWithLogoWithOutFilter() {
                 resolve();
             }))
                 .on('progress', function (progress) {
-                //console.log('Processing: ' + progress.percent.toFixed(2) + '%');
-                process.stdout.write('Processing: ' + progress.percent.toFixed(2) + '% \r');
+                if (progress && (progress === null || progress === void 0 ? void 0 : progress.percent))
+                    console.log('Processing: ' + progress.percent.toFixed(2) + '%');
             })
                 .on('error', (err) => {
                 console.error('Error:', err);
@@ -110,8 +110,9 @@ function AddFilterAndScaleUP(filename) {
                 resolve();
             }))
                 .on('progress', function (progress) {
-                // console.log('Processing: ' + progress.percent.toFixed(2) + '%');
-                process.stdout.write('Processing: ' + progress.percent.toFixed(2) + '% \r');
+                if (progress && (progress === null || progress === void 0 ? void 0 : progress.percent))
+                    console.log('Processing: ' + progress.percent.toFixed(2) + '%');
+                //process.stdout.write('Processing: ' + progress.percent.toFixed(2) + '% \r')
             })
                 .on('error', (err) => {
                 console.error('Error:', err);
@@ -140,9 +141,9 @@ function ScaledOnly(filename) {
                 resolve();
             }))
                 .on('progress', function (progress) {
-                var _a;
                 // console.log('Processing: ' + progress.percent.toFixed(2) + '%');
-                process.stdout.write('Processing: ' + ((_a = progress === null || progress === void 0 ? void 0 : progress.percent) === null || _a === void 0 ? void 0 : _a.toFixed(2)) + '% \r');
+                if (progress && (progress === null || progress === void 0 ? void 0 : progress.percent))
+                    console.log('Processing: ' + progress.percent.toFixed(2) + '%');
             })
                 .on('error', (err) => {
                 console.error('Error:', err);
@@ -238,7 +239,7 @@ function HandleFromInstagram(ReelUrl, logo, filter, mongoId) {
 exports.HandleFromInstagram = HandleFromInstagram;
 const GetTiktokDuration = (tiklink) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        return (0, get_video_duration_1.default)(tiklink);
+        return (0, get_video_duration_1.default)(tiklink, '/usr/bin/ffprobe');
     }
     catch (_a) {
         return 0;

@@ -1,8 +1,9 @@
 FROM node:18.17.0
 
-USER root
-
-RUN apt-get update && apt-get install -y nscd
+# Install necessary packages including nscd
+RUN apt-get update && apt-get install -y \
+    ffmpeg \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /usr/src/app
 

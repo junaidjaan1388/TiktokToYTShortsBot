@@ -38,8 +38,8 @@ async function RenderWithLogoAndFilter() {
       await AddFilterAndScaleUP('logoded');
     })
     .on('progress', function(progress) {
-      if (progress.percent)
-        process.stdout.write('Processing: ' + progress.percent.toFixed(2) + '% \r')
+      if (progress && progress?.percent)
+        console.log('Processing: ' + progress.percent.toFixed(2) + '%');
     })
     .on('error', (err) => {
       console.error('Error:', err);
@@ -69,8 +69,8 @@ async function RenderWithLogoWithOutFilter() {
       resolve();
     })
     .on('progress', function(progress) {
-      //console.log('Processing: ' + progress.percent.toFixed(2) + '%');
-      process.stdout.write('Processing: ' + progress.percent.toFixed(2) + '% \r')
+      if (progress && progress?.percent)
+        console.log('Processing: ' + progress.percent.toFixed(2) + '%');
     })
     .on('error', (err) => {
       console.error('Error:', err);
@@ -100,8 +100,9 @@ async function AddFilterAndScaleUP(filename:string){
       resolve()
     })
     .on('progress', function(progress) {
-      // console.log('Processing: ' + progress.percent.toFixed(2) + '%');
-      process.stdout.write('Processing: ' + progress.percent.toFixed(2) + '% \r')
+      if (progress && progress?.percent)
+        console.log('Processing: ' + progress.percent.toFixed(2) + '%');
+      //process.stdout.write('Processing: ' + progress.percent.toFixed(2) + '% \r')
       
       })
     .on('error', (err) => {
@@ -132,7 +133,8 @@ async function ScaledOnly(filename:string){
   })
   .on('progress', function(progress) {
    // console.log('Processing: ' + progress.percent.toFixed(2) + '%');
-    process.stdout.write('Processing: ' + progress?.percent?.toFixed(2) + '% \r')
+   if (progress && progress?.percent)
+        console.log('Processing: ' + progress.percent.toFixed(2) + '%');
     })
   .on('error', (err) => {
     console.error('Error:', err);
@@ -231,7 +233,7 @@ export async function HandleFromInstagram(ReelUrl:string,logo:boolean,filter:boo
 
   const GetTiktokDuration = async (tiklink:string) => {
         try{
-            return getVideoDurationInSeconds(tiklink)
+            return getVideoDurationInSeconds(tiklink,'/usr/bin/ffprobe')
         }catch{
             return 0
         }
