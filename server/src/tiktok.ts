@@ -88,11 +88,12 @@ async function AddFilterAndScaleUP(filename:string){
   return new Promise<void>((resolve,reject)=>{
     ffmpeg('ffmpeg-auto/'+filename+'.mp4')
     .videoFilters([
-      'scale=1440:2560:flags=lanczos,eq=contrast=1.1:brightness=-0.07:saturation=1.2,unsharp=7:7:1:7:7:0'
+      'scale=1440:2560:flags=lanczos,eq=contrast=1.1:brightness=-0.07:saturation=1.2,setdar=9/16,unsharp=7:7:1:7:7:0'
     ])
     .videoCodec('libx264')
     .audioCodec('copy')
     .outputOptions('-qp 19')
+    .duration(59)
     .output('ffmpeg-auto/output.mp4')
     .on('end', async() => {
       console.log('Processing finished Ready To Upload');
