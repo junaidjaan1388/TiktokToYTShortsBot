@@ -3,14 +3,15 @@ import { useForm } from 'react-hook-form';
 import { DevTool } from "@hookform/devtools";
 import axios from 'axios'
 import toast, { Toaster } from 'react-hot-toast';
-import {ImagePlus , SlidersHorizontal} from 'lucide-react'
+import {AtSign, ImagePlus , SlidersHorizontal} from 'lucide-react'
 import { useRouter } from 'next/navigation';
 import { useState, useTransition } from 'react';
 
 type FormData = {
     ttLink : string;
     filter : boolean;
-    logo   : boolean
+    logo   : boolean;
+    watermark:boolean
 }
 
 function getLinkType(link: string): 'tiktok' | 'instagram' | 'unknown' {
@@ -37,7 +38,6 @@ function Form() {
       
 
       const tiktokVideoRegex = /(tiktok\.com|instagram\.com)(.*)\//;
-      const instaregex = /\/(?:p|reel|reels)\/([A-Za-z0-9_-]+)\/?(\?.*)?/;
       const router = useRouter();
       const [isPending, startTransition] = useTransition();
       const [Sumbitstate,setSumbitState] = useState(false)
@@ -49,25 +49,11 @@ function Form() {
         const toastId = toast.loading("Please wait...")
         setSumbitState(true)
         try{
-            // if (getLinkType(dataform.ttLink) == 'instagram')
-            // {
-            //   const match = dataform.ttLink.match(/\/(?:p|reel|reels)\/([A-Za-z0-9_-]+)\/?(\?.*)?/);
-            //   console.log(match);
-            //   if (!match)
-            //   {
-            //     console.log("wrong insta link")
-            //     toast.error('Wrong Instgram Link', {
-            //       id: toastId,
-            //     });
-            //     setSumbitState(false)
-            //   }
-              
-            // }
-
             const {data} = await axios.post(process.env.NEXT_PUBLIC_API_URL+'/AddNewLinkToWaitList', {
                 tiktokLink:dataform.ttLink,
                 logo:dataform.logo,
                 filter:dataform.filter,
+                watermark:dataform.watermark,
                 type : getLinkType(dataform.ttLink)
               })
 
@@ -128,18 +114,24 @@ function Form() {
                   </div>  
                   {errors.ttLink?.message && <p className="mt-2 text-sm text-red-600 dark:text-red-500"><span className="font-medium"> {errors.ttLink?.message} </span> </p>}
                   
-                  <div className="grid gap-6 mt-5 md:grid-cols-2">
+                  <div className="mt-5 grid grid-cols-3 grid-rows-1 gap-4">
                             {/* options */}
                     <div className="flex items-center pl-4 border border-gray-200 rounded dark:border-gray-700 ">
                             <input  id="bordered-checkbox-1" type="checkbox" {...register("filter")} className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600 "/>
                             <label htmlFor="bordered-checkbox-1" className="flex justify-center w-full py-4 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300 ">Filter <SlidersHorizontal color="#991b1b" className='ml-2 h-5 w-5' /></label>
-                        </div>
-                        <div className="flex items-center pl-4 border border-gray-200 rounded dark:border-gray-700">
+                    </div>
+                    <div className="flex items-center pl-4 border border-gray-200 rounded dark:border-gray-700">
                             <input   id="bordered-checkbox-2" type="checkbox" {...register("logo")} className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
                             
                             <label htmlFor="bordered-checkbox-2" className="flex justify-center w-full py-4 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Logo <ImagePlus color="#991b1b" className='ml-2 h-5 w-5' /> </label>
+                    </div>
 
-                        </div>
+                    <div className="flex items-center pl-4 border border-gray-200 rounded dark:border-gray-700">
+                            <input   id="bordered-checkbox-3" type="checkbox" {...register("watermark")} className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
+                            
+                            <label htmlFor="bordered-checkbox-3" className="flex justify-center w-full py-4 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Watermark <AtSign color="#991b1b" className='ml-2 h-5 w-5' /> </label> 
+                    </div>
+
                     </div>
                     <button
                         className={ `group relative inline-block text-sm font-medium text-white ${Sumbitstate && 'cursor-not-allowed'} focus:outline-none focus:ring mt-5`}
