@@ -30,7 +30,7 @@ let LinkID;
 //RenderWithLogoAndFilter()
 // AddFilterAndScaleUP('input')
 //RenderWithLogoWithOutFilter();
-function RenderWithLogoAndFilter() {
+function RenderWithLogoAndFilter(watermark) {
     return __awaiter(this, void 0, void 0, function* () {
         return new Promise((resolve, reject) => {
             (0, fluent_ffmpeg_1.default)()
@@ -40,14 +40,14 @@ function RenderWithLogoAndFilter() {
                 '[1][0]scale2ref=w=iw/3:h=ow/mdar[logo][main]',
                 '[main][logo]overlay=x=(main_w-overlay_w)/2:y=(main_h-overlay_h)-10'
             ])
-                // .outputOptions('-vcodec h264_nvenc')
-                .outputOptions('-c:v libx264')
-                .outputOptions('-c:a copy')
+                .videoCodec('libx264')
+                .audioCodec('copy')
+                .outputOptions('-qp 19')
                 .output('ffmpeg-auto/logoded.mp4')
                 .on('end', () => __awaiter(this, void 0, void 0, function* () {
                 console.log('Processing finished , Logo Added');
                 console.log(Title + ' ' + Description);
-                yield AddFilterAndScaleUP('logoded');
+                yield AddFilterAndScaleUP('logoded', watermark);
             }))
                 .on('progress', function (progress) {
                 if (progress && (progress === null || progress === void 0 ? void 0 : progress.percent))
@@ -60,7 +60,7 @@ function RenderWithLogoAndFilter() {
         });
     });
 }
-function RenderWithLogoWithOutFilter() {
+function RenderWithLogoWithOutFilter(watermark) {
     return __awaiter(this, void 0, void 0, function* () {
         return new Promise((resolve, reject) => {
             (0, fluent_ffmpeg_1.default)()
@@ -70,14 +70,14 @@ function RenderWithLogoWithOutFilter() {
                 '[1][0]scale2ref=w=iw/3:h=ow/mdar[logo][main]',
                 '[main][logo]overlay=x=(main_w-overlay_w)/2:y=(main_h-overlay_h)-10'
             ])
-                // .outputOptions('-vcodec h264_nvenc')
-                .outputOptions('-c:v libx264')
-                .outputOptions('-c:a copy')
+                .videoCodec('libx264')
+                .audioCodec('copy')
+                .outputOptions('-qp 19')
                 .output('ffmpeg-auto/logoded.mp4')
                 .on('end', () => __awaiter(this, void 0, void 0, function* () {
                 console.log('Processing finished , Logo Added');
                 console.log(Title + ' ' + Description);
-                yield ScaledOnly('logoded');
+                yield ScaledOnly('logoded', watermark);
                 resolve();
             }))
                 .on('progress', function (progress) {
@@ -92,27 +92,29 @@ function RenderWithLogoWithOutFilter() {
         });
     });
 }
-function AddFilterAndScaleUP(filename) {
+function AddFilterAndScaleUP(filename, watermark) {
     return __awaiter(this, void 0, void 0, function* () {
         return new Promise((resolve, reject) => {
             (0, fluent_ffmpeg_1.default)('ffmpeg-auto/' + filename + '.mp4')
                 .videoFilters([
-                'scale=1440:2560:flags=lanczos,eq=contrast=1.1:brightness=-0.07:saturation=1.2,unsharp=7:7:1:7:7:0'
+                'scale=1440:2560:flags=lanczos,eq=contrast=1.1:brightness=-0.07:saturation=1.2,setdar=9/16,unsharp=7:7:1:7:7:0'
             ])
-                // .outputOptions('-vcodec h264_nvenc')
-                .outputOptions('-r 60')
+                .videoCodec('libx264')
+                .audioCodec('copy')
                 .outputOptions('-qp 19')
-                .outputOptions('-c:a copy')
+                .duration(59)
                 .output('ffmpeg-auto/output.mp4')
                 .on('end', () => __awaiter(this, void 0, void 0, function* () {
                 console.log('Processing finished Ready To Upload');
-                yield (0, UploadShorts_1.UploadShorts)('output', Title, Description, LinkID);
+                if (watermark)
+                    yield RenderWithWaterMark("output");
+                else
+                    yield (0, UploadShorts_1.UploadShorts)('output', Title, Description, LinkID);
                 resolve();
             }))
                 .on('progress', function (progress) {
                 if (progress && (progress === null || progress === void 0 ? void 0 : progress.percent))
                     console.log('Processing: ' + progress.percent.toFixed(2) + '%');
-                //process.stdout.write('Processing: ' + progress.percent.toFixed(2) + '% \r')
             })
                 .on('error', (err) => {
                 console.error('Error:', err);
@@ -122,22 +124,26 @@ function AddFilterAndScaleUP(filename) {
         });
     });
 }
-function ScaledOnly(filename) {
+function ScaledOnly(filename, watermark) {
     return __awaiter(this, void 0, void 0, function* () {
         return new Promise((resolve, reject) => {
             (0, fluent_ffmpeg_1.default)('ffmpeg-auto/' + filename + '.mp4')
-                .videoFilters([
-                'scale=1440:2560:flags=lanczos,unsharp=7:7:1:7:7:0'
-            ])
                 // .outputOptions('-c:v h264_qsv')
-                .outputOptions('-r 60')
+                .videoCodec('libx264')
+                .audioCodec('copy')
+                .videoFilters([
+                'scale=1440:2560:flags=lanczos,setdar=9/16,unsharp=7:7:1:7:7:0'
+            ])
+                .duration(59)
                 .outputOptions('-qp 19')
-                .outputOptions('-c:a copy')
                 .output('ffmpeg-auto/output.mp4')
                 .on('end', () => __awaiter(this, void 0, void 0, function* () {
                 console.timeEnd("time : ");
                 console.log('Processing finished Ready To Upload');
-                yield (0, UploadShorts_1.UploadShorts)('output', Title, Description, LinkID);
+                if (watermark)
+                    yield RenderWithWaterMark('output');
+                else
+                    yield (0, UploadShorts_1.UploadShorts)('output', Title, Description, LinkID);
                 resolve();
             }))
                 .on('progress', function (progress) {
@@ -153,27 +159,57 @@ function ScaledOnly(filename) {
         });
     });
 }
-function HandleRenderLogic(downloader, logo, filter) {
+function RenderWithWaterMark(filename) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return new Promise((resolve, reject) => {
+            (0, fluent_ffmpeg_1.default)()
+                .input('ffmpeg-auto/' + filename + '.mp4')
+                .input('ffmpeg-auto/watermark.png')
+                .complexFilter([
+                "[0:v]scale=1080:-1[bg];[bg][1:v]overlay=W-w-10:H-h+200"
+            ])
+                .videoCodec('libx264')
+                .audioCodec('copy')
+                .outputOptions('-qp 19')
+                .output('ffmpeg-auto/watermaked.mp4')
+                .on('end', () => __awaiter(this, void 0, void 0, function* () {
+                console.log('Processing finished , Watermark Added');
+                yield (0, UploadShorts_1.UploadShorts)('watermaked', Title, Description, LinkID);
+                resolve();
+            }))
+                .on('progress', function (progress) {
+                if (progress && (progress === null || progress === void 0 ? void 0 : progress.percent))
+                    console.log('Watermarking Processing: ' + progress.percent.toFixed(2) + '%');
+            })
+                .on('error', (err) => {
+                console.error('Error:', err);
+                reject();
+            })
+                .run();
+        });
+    });
+}
+function HandleRenderLogic(downloader, logo, filter, watermark) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const { filePath, downloadStatus } = yield downloader.download(); //Downloader.download() resolves with some useful properties.
             console.log("Download Tiktok Completed");
             if (logo && filter) {
                 console.log('Rendering With Logo + Filter + ScaleUP ');
-                yield RenderWithLogoAndFilter();
+                yield RenderWithLogoAndFilter(watermark);
             }
             if (logo && !filter) {
                 console.log('Rendering With Logo + ScaleUP ');
-                yield RenderWithLogoWithOutFilter();
+                yield RenderWithLogoWithOutFilter(watermark);
             }
             if (!logo && filter) {
                 console.log('Rendering With Filter + ScaleUP ');
-                yield AddFilterAndScaleUP('input');
+                yield AddFilterAndScaleUP('input', watermark);
             }
             if (!logo && !filter) {
                 console.time("time : ");
                 console.log('Rendering With ScaleUP Only');
-                yield ScaledOnly('input');
+                yield ScaledOnly('input', watermark);
             }
         }
         catch (error) {
@@ -183,7 +219,7 @@ function HandleRenderLogic(downloader, logo, filter) {
         }
     });
 }
-function HandleFromTiktok(tiktok_url, logo, filter, IdLink) {
+function HandleFromTiktok(tiktok_url, logo, filter, watermark, IdLink) {
     return __awaiter(this, void 0, void 0, function* () {
         return (0, tiktok_api_dl_1.TiktokDL)(tiktok_url).then((result) => __awaiter(this, void 0, void 0, function* () {
             var _a, _b, _c, _d;
@@ -204,7 +240,7 @@ function HandleFromTiktok(tiktok_url, logo, filter, IdLink) {
                             process.stdout.write("Downloading tiktok % " + percentage + "\r");
                         },
                     });
-                    HandleRenderLogic(downloader, logo, filter);
+                    HandleRenderLogic(downloader, logo, filter, watermark);
                 }
             }
             else {
@@ -214,7 +250,7 @@ function HandleFromTiktok(tiktok_url, logo, filter, IdLink) {
     });
 }
 exports.HandleFromTiktok = HandleFromTiktok;
-function HandleFromInstagram(ReelUrl, logo, filter, mongoId) {
+function HandleFromInstagram(ReelUrl, logo, filter, watermark, mongoId) {
     return __awaiter(this, void 0, void 0, function* () {
         const result = yield (0, instagram_1.GetReelDetailsV2)(ReelUrl);
         if (result) {
@@ -232,7 +268,7 @@ function HandleFromInstagram(ReelUrl, logo, filter, mongoId) {
                     process.stdout.write("Downloading tiktok % " + percentage + "\r");
                 },
             });
-            HandleRenderLogic(downloader, logo, filter);
+            HandleRenderLogic(downloader, logo, filter, watermark);
         }
     });
 }

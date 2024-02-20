@@ -10,7 +10,6 @@ ffmpeg.setFfprobePath(ffmpegProbe);
 async function ScaledOnly(filename:string){
     return new Promise<void>((resolve,reject)=>{
     ffmpeg('ffmpeg-auto/'+filename+'.mp4')
-
     .videoCodec('libx264')
     .audioCodec('copy')
     .videoFilters([
@@ -20,6 +19,7 @@ async function ScaledOnly(filename:string){
     .output('ffmpeg-auto/output.mp4')
     .on('end', async () => {
       console.timeEnd("time : ");
+      RenderWithWaterMark(); 
       console.log('Processing finished Ready To Upload');
       resolve();
     })    
@@ -34,6 +34,35 @@ async function ScaledOnly(filename:string){
     })
     
   }
+
+
+async function RenderWithWaterMark() {
+  return new Promise<void>((resolve,reject)=>{
+    ffmpeg()
+    .input('ffmpeg-auto/output.mp4')
+    .input('ffmpeg-auto/watermark.png')
+    .complexFilter([
+      "[0:v]scale=1080:-1[bg];[bg][1:v]overlay=W-w-10:H-h+200"
+    ])
+    .videoCodec('libx264')
+    .audioCodec('copy')
+    .outputOptions('-qp 19')
+    .output('ffmpeg-auto/watermaked.mp4')
+    .on('end',async () => {
+      console.log('Processing finished , Watermark Added');
+      resolve();
+    })
+    .on('progress', function(progress) {
+      if (progress && progress?.percent)
+        console.log('Watermarking Processing: ' + progress.percent.toFixed(2) + '%');
+    })
+    .on('error', (err) => {
+      console.error('Error:', err);
+      reject();
+    })
+    .run();
+  })  
+}
 
   export async function HandleFromTiktok(tiktok_url:string,logo:boolean,filter:boolean){
 
@@ -59,7 +88,7 @@ async function ScaledOnly(filename:string){
                 try {
                   const {filePath,downloadStatus} = await downloader.download(); //Downloader.download() resolves with some useful properties.
                   console.time("time : ");  
-                  await ScaledOnly('input')
+                  //await RenderWithWaterMark();
               } catch (error) {
                   //IMPORTANT: Handle a possible error. An error is thrown in case of network errors, or status codes of 400 and above.
                   //Note that if the maxAttempts is set to higher than 1, the error is thrown only if all attempts fail.
@@ -73,6 +102,6 @@ async function ScaledOnly(filename:string){
     })
 }
 console.time("time : ");
-  ScaledOnly("input");
-//  HandleFromTiktok("https://www.tiktok.com/@musclemichael/video/7311747072347180331?lang=en",false,false)
-//HandleFromTiktok("https://www.tiktok.com/@tbvnks_clipz/video/7307308778288975134?is_from_webapp=1&sender_device=pc&web_id=7336501286944556550",false,false)
+ScaledOnly("input");
+//HandleFromTiktok("https://www.tiktok.com/@brooklynnets/video/7336701155525004590?is_from_webapp=1&sender_device=pc&web_id=7337611474590893569",false,false)
+//HandleFromTiktok("https://www.tiktok.com/@themotivationalgoat/video/7328889826701315361?is_from_webapp=1&sender_device=pc&web_id=7337611474590893569",false,false)

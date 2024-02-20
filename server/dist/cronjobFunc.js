@@ -26,9 +26,9 @@ const cronjobFunc = () => __awaiter(void 0, void 0, void 0, function* () {
             try {
                 // now change isWorking
                 if ((result === null || result === void 0 ? void 0 : result.type) == 'tiktok')
-                    yield (0, tiktok_1.HandleFromTiktok)(result === null || result === void 0 ? void 0 : result.tiktokLink, result === null || result === void 0 ? void 0 : result.logo, result === null || result === void 0 ? void 0 : result.filter, result === null || result === void 0 ? void 0 : result.id);
+                    yield (0, tiktok_1.HandleFromTiktok)(result === null || result === void 0 ? void 0 : result.tiktokLink, result === null || result === void 0 ? void 0 : result.logo, result === null || result === void 0 ? void 0 : result.filter, result === null || result === void 0 ? void 0 : result.watermark, result === null || result === void 0 ? void 0 : result.id);
                 else if ((result === null || result === void 0 ? void 0 : result.type) == 'instagram')
-                    yield (0, tiktok_1.HandleFromInstagram)(result === null || result === void 0 ? void 0 : result.tiktokLink, result === null || result === void 0 ? void 0 : result.logo, result === null || result === void 0 ? void 0 : result.filter, result === null || result === void 0 ? void 0 : result.id);
+                    yield (0, tiktok_1.HandleFromInstagram)(result === null || result === void 0 ? void 0 : result.tiktokLink, result === null || result === void 0 ? void 0 : result.logo, result === null || result === void 0 ? void 0 : result.filter, result === null || result === void 0 ? void 0 : result.watermark, result === null || result === void 0 ? void 0 : result.id);
                 console.log('Finished everything');
                 // cronjobFunc()
             }

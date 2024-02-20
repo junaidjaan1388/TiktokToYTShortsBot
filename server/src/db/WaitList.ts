@@ -8,6 +8,7 @@ interface ILinks {
     dynamic_cover?:string,
     logo: boolean;
     filter: boolean;
+    watermark: boolean;
     duration:number;
     isWorking:boolean;
     type:string
@@ -20,6 +21,7 @@ interface ILinks {
     dynamic_cover: { type: String, required: false },
     logo: { type: Boolean, required: true },
     filter: { type: Boolean, required: true },
+    watermark: { type: Boolean, required: true },
     duration: { type: Number, required: true },
     isWorking: { type: Boolean, required: true },
     type : { type :  String, required: true}
@@ -33,7 +35,8 @@ interface ILinks {
     title:string,
     description:string,
     logo:boolean,
-    filter:boolean
+    filter:boolean,
+    watermark:boolean
   }
 
     //MODAL 

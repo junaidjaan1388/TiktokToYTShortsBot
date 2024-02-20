@@ -19,7 +19,7 @@ let LinkID : string ;
 //RenderWithLogoAndFilter()
 // AddFilterAndScaleUP('input')
 //RenderWithLogoWithOutFilter();
-async function RenderWithLogoAndFilter() {
+async function RenderWithLogoAndFilter(watermark:boolean) {
   return new Promise<void>((resolve,reject)=>{
     ffmpeg()
     .input('ffmpeg-auto/input.mp4')
@@ -35,7 +35,7 @@ async function RenderWithLogoAndFilter() {
     .on('end',async () => {
       console.log('Processing finished , Logo Added');
       console.log(Title +' '+Description)
-      await AddFilterAndScaleUP('logoded');
+      await AddFilterAndScaleUP('logoded',watermark);
     })
     .on('progress', function(progress) {
       if (progress && progress?.percent)
@@ -49,7 +49,7 @@ async function RenderWithLogoAndFilter() {
    
 }
 
-async function RenderWithLogoWithOutFilter() {
+async function RenderWithLogoWithOutFilter(watermark:boolean) {
   return new Promise<void>((resolve,reject)=>{
     ffmpeg()
     .input('ffmpeg-auto/input.mp4')
@@ -58,7 +58,6 @@ async function RenderWithLogoWithOutFilter() {
       '[1][0]scale2ref=w=iw/3:h=ow/mdar[logo][main]',
       '[main][logo]overlay=x=(main_w-overlay_w)/2:y=(main_h-overlay_h)-10'
     ])
-    // .outputOptions('-vcodec h264_nvenc')
     .videoCodec('libx264')
     .audioCodec('copy')
     .outputOptions('-qp 19')
@@ -66,7 +65,7 @@ async function RenderWithLogoWithOutFilter() {
     .on('end',async () => {
       console.log('Processing finished , Logo Added');
       console.log(Title +' '+Description)
-      await ScaledOnly('logoded')
+      await ScaledOnly('logoded',watermark);
       resolve();
     })
     .on('progress', function(progress) {
@@ -84,7 +83,7 @@ async function RenderWithLogoWithOutFilter() {
 }
 
 
-async function AddFilterAndScaleUP(filename:string){
+async function AddFilterAndScaleUP(filename:string,watermark:boolean){
   return new Promise<void>((resolve,reject)=>{
     ffmpeg('ffmpeg-auto/'+filename+'.mp4')
     .videoFilters([
@@ -97,14 +96,15 @@ async function AddFilterAndScaleUP(filename:string){
     .output('ffmpeg-auto/output.mp4')
     .on('end', async() => {
       console.log('Processing finished Ready To Upload');
-      await UploadShorts('output',Title,Description,LinkID)
+      if (watermark)
+        await RenderWithWaterMark("output")
+      else
+        await UploadShorts('output',Title,Description,LinkID)
       resolve()
     })
     .on('progress', function(progress) {
       if (progress && progress?.percent)
-        console.log('Processing: ' + progress.percent.toFixed(2) + '%');
-      //process.stdout.write('Processing: ' + progress.percent.toFixed(2) + '% \r')
-      
+        console.log('Processing: ' + progress.percent.toFixed(2) + '%');      
       })
     .on('error', (err) => {
       console.error('Error:', err);
@@ -114,7 +114,7 @@ async function AddFilterAndScaleUP(filename:string){
   })
 }
 
-async function ScaledOnly(filename:string){
+async function ScaledOnly(filename:string,watermark:boolean){
   return new Promise<void>((resolve,reject)=>{
     ffmpeg('ffmpeg-auto/'+filename+'.mp4')
   // .outputOptions('-c:v h264_qsv')
@@ -129,7 +129,10 @@ async function ScaledOnly(filename:string){
   .on('end', async () => {
     console.timeEnd("time : ");
     console.log('Processing finished Ready To Upload');
-    await UploadShorts('output',Title,Description,LinkID)
+    if (watermark)
+      await RenderWithWaterMark('output');
+    else
+      await UploadShorts('output',Title,Description,LinkID)
     resolve();
   })
   .on('progress', function(progress) {
@@ -146,7 +149,36 @@ async function ScaledOnly(filename:string){
   
 }
 
-async function HandleRenderLogic(downloader:Downloader,logo:boolean,filter:boolean)
+async function RenderWithWaterMark(filename:string) {
+  return new Promise<void>((resolve,reject)=>{
+    ffmpeg()
+    .input('ffmpeg-auto/'+filename+'.mp4')
+    .input('ffmpeg-auto/watermark.png')
+    .complexFilter([
+      "[0:v]scale=1080:-1[bg];[bg][1:v]overlay=W-w-10:H-h+200"
+    ])
+    .videoCodec('libx264')
+    .audioCodec('copy')
+    .outputOptions('-qp 19')
+    .output('ffmpeg-auto/watermaked.mp4')
+    .on('end',async () => {
+      console.log('Processing finished , Watermark Added');
+      await UploadShorts('watermaked',Title,Description,LinkID)
+      resolve();
+    })
+    .on('progress', function(progress) {
+      if (progress && progress?.percent)
+        console.log('Watermarking Processing: ' + progress.percent.toFixed(2) + '%');
+    })
+    .on('error', (err) => {
+      console.error('Error:', err);
+      reject();
+    })
+    .run();
+  })  
+}
+
+async function HandleRenderLogic(downloader:Downloader,logo:boolean,filter:boolean,watermark:boolean)
 {
   try {
     const {filePath,downloadStatus} = await downloader.download(); //Downloader.download() resolves with some useful properties.
@@ -154,20 +186,20 @@ async function HandleRenderLogic(downloader:Downloader,logo:boolean,filter:boole
     console.log("Download Tiktok Completed");
     if(logo && filter) {
       console.log('Rendering With Logo + Filter + ScaleUP ')
-      await RenderWithLogoAndFilter();
+      await RenderWithLogoAndFilter(watermark);
     }
     if(logo && !filter){
       console.log('Rendering With Logo + ScaleUP ')
-      await RenderWithLogoWithOutFilter()
+      await RenderWithLogoWithOutFilter(watermark)
     }
     if(!logo && filter){
       console.log('Rendering With Filter + ScaleUP ')
-      await AddFilterAndScaleUP('input')
+      await AddFilterAndScaleUP('input',watermark)
     }
     if(!logo && !filter){
       console.time("time : ");
       console.log('Rendering With ScaleUP Only')
-      await ScaledOnly('input')
+      await ScaledOnly('input',watermark)
     }
     
 } catch (error) {
@@ -177,7 +209,7 @@ async function HandleRenderLogic(downloader:Downloader,logo:boolean,filter:boole
 }
 }
 
-export async function HandleFromTiktok(tiktok_url:string,logo:boolean,filter:boolean,IdLink:string){
+export async function HandleFromTiktok(tiktok_url:string,logo:boolean,filter:boolean,watermark:boolean,IdLink:string){
 
         return TiktokDL(tiktok_url).then(async (result) => {
             if(result.status == "success"){
@@ -199,7 +231,7 @@ export async function HandleFromTiktok(tiktok_url:string,logo:boolean,filter:boo
                           },
             
                     });
-                    HandleRenderLogic(downloader,logo,filter);
+                    HandleRenderLogic(downloader,logo,filter,watermark);
                 }
             }else{
               throw new Error('Something went wrong while getting tiktok details');
@@ -208,7 +240,7 @@ export async function HandleFromTiktok(tiktok_url:string,logo:boolean,filter:boo
 }
 
 
-export async function HandleFromInstagram(ReelUrl:string,logo:boolean,filter:boolean,mongoId:string)
+export async function HandleFromInstagram(ReelUrl:string,logo:boolean,filter:boolean,watermark:boolean,mongoId:string)
 {
   const result = await GetReelDetailsV2(ReelUrl)
   if (result)
@@ -227,7 +259,7 @@ export async function HandleFromInstagram(ReelUrl:string,logo:boolean,filter:boo
           process.stdout.write("Downloading tiktok % "+ percentage + "\r");
         },
     });
-    HandleRenderLogic(downloader,logo,filter)
+    HandleRenderLogic(downloader,logo,filter,watermark)
   }
 }
 

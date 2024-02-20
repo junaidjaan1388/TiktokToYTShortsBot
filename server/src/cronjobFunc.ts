@@ -15,9 +15,9 @@ export const cronjobFunc = async () => {
             try{
                 // now change isWorking
                 if (result?.type == 'tiktok')
-                    await HandleFromTiktok(result?.tiktokLink!,result?.logo!,result?.filter!,result?.id)
+                    await HandleFromTiktok(result?.tiktokLink!,result?.logo!,result?.filter!,result?.watermark!,result?.id)
                 else if (result?.type == 'instagram')
-                    await HandleFromInstagram(result?.tiktokLink!,result?.logo!,result?.filter!,result?.id)
+                    await HandleFromInstagram(result?.tiktokLink!,result?.logo!,result?.filter!,result?.watermark!,result?.id)
                 console.log('Finished everything')
                // cronjobFunc()
             }catch{

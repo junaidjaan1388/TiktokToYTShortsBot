@@ -46,6 +46,7 @@ app.post('/AddNewLinkToWaitList',async (req:express.Request,res:express.Response
             filter:req.body.filter,
             duration:tikInfo?.duration as number,
             isWorking:false,
+            watermark:req.body.watermark,
             type : req.body.type
          }).then(()=>res.send(true))
            .catch(()=>{
@@ -64,6 +65,7 @@ app.post('/AddNewLinkToWaitList',async (req:express.Request,res:express.Response
             filter:req.body.filter,
             duration: reelInfo?.duration !== undefined ? parseFloat(reelInfo?.duration) : 0,
             isWorking:false,
+            watermark:req.body.watermark,
             type : req.body.type
          }).then(()=>res.send(true))
            .catch(()=>{

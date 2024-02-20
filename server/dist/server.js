@@ -52,6 +52,7 @@ app.post('/AddNewLinkToWaitList', (req, res) => __awaiter(void 0, void 0, void 0
             filter: req.body.filter,
             duration: tikInfo === null || tikInfo === void 0 ? void 0 : tikInfo.duration,
             isWorking: false,
+            watermark: req.body.watermark,
             type: req.body.type
         }).then(() => res.send(true))
             .catch(() => {
@@ -69,6 +70,7 @@ app.post('/AddNewLinkToWaitList', (req, res) => __awaiter(void 0, void 0, void 0
             filter: req.body.filter,
             duration: (reelInfo === null || reelInfo === void 0 ? void 0 : reelInfo.duration) !== undefined ? parseFloat(reelInfo === null || reelInfo === void 0 ? void 0 : reelInfo.duration) : 0,
             isWorking: false,
+            watermark: req.body.watermark,
             type: req.body.type
         }).then(() => res.send(true))
             .catch(() => {
