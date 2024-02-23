@@ -1,6 +1,7 @@
 import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { Innertube, UniversalCache } from 'youtubei.js';
 import { DeleteLink } from './db/WaitList';
+import { updateStatus } from './server';
 
 const creds_path = './client_secret.json';
 const creds = existsSync(creds_path) ? JSON.parse(readFileSync(creds_path).toString()) : undefined;
@@ -28,28 +29,33 @@ export async function UploadShorts (filename:string,ShortTitle:string,desc:strin
   
    const hashtags:string = '#motivation #fitnessmotivation #motivationalquotes #gymmotivation #gym #workoutmotivation #motivational #success #successquotes #successmindset #positivity #hustle #mind #mindsetiseverything'
    //ila makanuch hashtags dir hadu par default mn a7ssn ydaro fconfig.json tji easy tbdl mn acc l acc
+  updateStatus("UPLOADING ...");
   console.log(`UPLOADING ...`);
   try{
     const upload = await yt.studio.upload(file.buffer, {
       title: ShortTitle,
       description: desc || hashtags,
-      privacy: 'PUBLIC'
+      // privacy: 'PUBLIC'
+      privacy: 'PRIVATE'
     });
     
   
     console.info('Done!', upload);
     if(upload.success){
+      updateStatus("IDLE");
       console.log('Uploaded Succesfully')
       await DeleteLink(LinkID);
       return true
   
     }else{
-      console.log('eerror while uploading')
+      updateStatus("ERROR While Uploading");
+      console.log('error while uploading')
       return false
     }
   }catch(error){
       console.log('Error While Uploading , '+error)
-      UploadShorts(filename,ShortTitle,desc,LinkID)
+      updateStatus("ERROR While Uploading");
+      //UploadShorts(filename,ShortTitle,desc,LinkID)
   }
  
   //delete file

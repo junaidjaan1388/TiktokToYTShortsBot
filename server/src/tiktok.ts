@@ -7,6 +7,7 @@ import Downloader from "nodejs-file-downloader"
 import { UploadShorts } from './UploadShorts';
 import getVideoDurationInSeconds from 'get-video-duration';
 import { GetReelDetailsV2 } from './instagram';
+import { updateStatus } from './server';
 
 ffmpeg.setFfmpegPath(ffmpegPath);
 ffmpeg.setFfprobePath(ffmpegProbe);
@@ -18,7 +19,7 @@ let LinkID : string ;
 //ScaledOnly('input')
 //RenderWithLogoAndFilter()
 // AddFilterAndScaleUP('input')
-//RenderWithLogoWithOutFilter();
+//RenderWithLogoWithOutFilter();zzzzzz
 async function RenderWithLogoAndFilter(watermark:boolean) {
   return new Promise<void>((resolve,reject)=>{
     ffmpeg()
@@ -39,7 +40,10 @@ async function RenderWithLogoAndFilter(watermark:boolean) {
     })
     .on('progress', function(progress) {
       if (progress && progress?.percent)
+      {
         console.log('Processing: ' + progress.percent.toFixed(2) + '%');
+        updateStatus("ADDING LOGO "+ progress.percent.toFixed(2) + "%");
+      }
     })
     .on('error', (err) => {
       console.error('Error:', err);
@@ -61,7 +65,7 @@ async function RenderWithLogoWithOutFilter(watermark:boolean) {
     .videoCodec('libx264')
     .audioCodec('copy')
     .outputOptions('-qp 19')
-    .output('ffmpeg-auto/logoded.mp4')
+    .output('ffmpeg-auto/logoded.mp4')  
     .on('end',async () => {
       console.log('Processing finished , Logo Added');
       console.log(Title +' '+Description)
@@ -70,7 +74,10 @@ async function RenderWithLogoWithOutFilter(watermark:boolean) {
     })
     .on('progress', function(progress) {
       if (progress && progress?.percent)
+      {
         console.log('Processing: ' + progress.percent.toFixed(2) + '%');
+        updateStatus("ADDING LOGO "+ progress.percent.toFixed(2) + "%");
+      }
     })
     .on('error', (err) => {
       console.error('Error:', err);
@@ -104,7 +111,10 @@ async function AddFilterAndScaleUP(filename:string,watermark:boolean){
     })
     .on('progress', function(progress) {
       if (progress && progress?.percent)
+      {
         console.log('Processing: ' + progress.percent.toFixed(2) + '%');      
+        updateStatus("ADDING FILTER "+ progress.percent.toFixed(2) + "%");
+      }
       })
     .on('error', (err) => {
       console.error('Error:', err);
@@ -138,7 +148,10 @@ async function ScaledOnly(filename:string,watermark:boolean){
   .on('progress', function(progress) {
    // console.log('Processing: ' + progress.percent.toFixed(2) + '%');
    if (progress && progress?.percent)
-        console.log('Processing: ' + progress.percent.toFixed(2) + '%');
+   {
+     console.log('Processing: ' + progress.percent.toFixed(2) + '%');
+     updateStatus("SCALING "+ progress.percent.toFixed(2) + "%");
+   }
     })
   .on('error', (err) => {
     console.error('Error:', err);
@@ -168,7 +181,10 @@ async function RenderWithWaterMark(filename:string) {
     })
     .on('progress', function(progress) {
       if (progress && progress?.percent)
+      {
         console.log('Watermarking Processing: ' + progress.percent.toFixed(2) + '%');
+        updateStatus("WATERMARKING "+ progress.percent.toFixed(2) + "%");
+      }
     })
     .on('error', (err) => {
       console.error('Error:', err);
@@ -205,6 +221,7 @@ async function HandleRenderLogic(downloader:Downloader,logo:boolean,filter:boole
 } catch (error) {
     //IMPORTANT: Handle a possible error. An error is thrown in case of network errors, or status codes of 400 and above.
     //Note that if the maxAttempts is set to higher than 1, the error is thrown only if all attempts fail.
+    updateStatus("Failed To upload");
     console.log("Download failed", error);
 }
 }
@@ -227,6 +244,7 @@ export async function HandleFromTiktok(tiktok_url:string,logo:boolean,filter:boo
                         maxAttempts:3,
                         onProgress: function (percentage, chunk, remainingSize) {
                             //Gets called with each chunk.
+                            updateStatus("DOWNLOADING "+ percentage + "%");
                             process.stdout.write("Downloading tiktok % "+ percentage + "\r");
                           },
             
@@ -256,7 +274,8 @@ export async function HandleFromInstagram(ReelUrl:string,logo:boolean,filter:boo
         maxAttempts:3,
         onProgress: function (percentage, chunk, remainingSize) {
           //Gets called with each chunk.
-          process.stdout.write("Downloading tiktok % "+ percentage + "\r");
+          updateStatus("DOWNLOADING "+ percentage + "%");
+          process.stdout.write("Downloading reel % "+ percentage + "\r");
         },
     });
     HandleRenderLogic(downloader,logo,filter,watermark)

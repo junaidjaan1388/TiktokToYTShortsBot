@@ -12,6 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.updateStatus = void 0;
 const mongoose_1 = require("mongoose");
 const dotenv_1 = __importDefault(require("dotenv"));
 const express_1 = __importDefault(require("express"));
@@ -24,6 +25,11 @@ const instagram_1 = require("./instagram");
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 8080;
+let currentStatus = "IDLE";
+function updateStatus(newStatus) {
+    currentStatus = newStatus;
+}
+exports.updateStatus = updateStatus;
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 try {
@@ -38,6 +44,9 @@ catch (e) {
 //https://crontab.guru/#*/30_*_*_*_*
 node_cron_1.default.schedule('*/30 * * * * ', () => {
     (0, cronjobFunc_1.cronjobFunc)();
+});
+app.get('/status', (req, res) => {
+    res.json({ status: currentStatus });
 });
 app.post('/AddNewLinkToWaitList', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log(req.body);

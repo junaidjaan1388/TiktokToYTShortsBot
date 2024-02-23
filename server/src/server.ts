@@ -12,6 +12,13 @@ dotenv.config()
 const app: Application = express();
 
 const PORT = process.env.PORT || 8080 ; 
+
+let currentStatus: string = "IDLE";
+
+export function updateStatus(newStatus:string) {
+    currentStatus = newStatus;
+  }
+
 app.use(cors())
 app.use(express.json())
 
@@ -24,13 +31,14 @@ try{
     console.log(e)
 }
 
-
-
 //https://crontab.guru/#*/30_*_*_*_*
 cron.schedule('*/30 * * * * ',()=>{
         cronjobFunc();
 })
 
+app.get('/status', (req, res) => {
+    res.json({ status: currentStatus });
+});
 
 app.post('/AddNewLinkToWaitList',async (req:express.Request,res:express.Response)=>{
     console.log(req.body)

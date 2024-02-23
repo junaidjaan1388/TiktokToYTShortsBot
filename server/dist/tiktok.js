@@ -21,6 +21,7 @@ const nodejs_file_downloader_1 = __importDefault(require("nodejs-file-downloader
 const UploadShorts_1 = require("./UploadShorts");
 const get_video_duration_1 = __importDefault(require("get-video-duration"));
 const instagram_1 = require("./instagram");
+const server_1 = require("./server");
 fluent_ffmpeg_1.default.setFfmpegPath(ffmpeg_1.path);
 fluent_ffmpeg_1.default.setFfprobePath(ffprobe_1.path);
 let Title;
@@ -29,7 +30,7 @@ let LinkID;
 //ScaledOnly('input')
 //RenderWithLogoAndFilter()
 // AddFilterAndScaleUP('input')
-//RenderWithLogoWithOutFilter();
+//RenderWithLogoWithOutFilter();zzzzzz
 function RenderWithLogoAndFilter(watermark) {
     return __awaiter(this, void 0, void 0, function* () {
         return new Promise((resolve, reject) => {
@@ -50,8 +51,10 @@ function RenderWithLogoAndFilter(watermark) {
                 yield AddFilterAndScaleUP('logoded', watermark);
             }))
                 .on('progress', function (progress) {
-                if (progress && (progress === null || progress === void 0 ? void 0 : progress.percent))
+                if (progress && (progress === null || progress === void 0 ? void 0 : progress.percent)) {
                     console.log('Processing: ' + progress.percent.toFixed(2) + '%');
+                    (0, server_1.updateStatus)("ADDING LOGO " + progress.percent.toFixed(2) + "%");
+                }
             })
                 .on('error', (err) => {
                 console.error('Error:', err);
@@ -81,8 +84,10 @@ function RenderWithLogoWithOutFilter(watermark) {
                 resolve();
             }))
                 .on('progress', function (progress) {
-                if (progress && (progress === null || progress === void 0 ? void 0 : progress.percent))
+                if (progress && (progress === null || progress === void 0 ? void 0 : progress.percent)) {
                     console.log('Processing: ' + progress.percent.toFixed(2) + '%');
+                    (0, server_1.updateStatus)("ADDING LOGO " + progress.percent.toFixed(2) + "%");
+                }
             })
                 .on('error', (err) => {
                 console.error('Error:', err);
@@ -113,8 +118,10 @@ function AddFilterAndScaleUP(filename, watermark) {
                 resolve();
             }))
                 .on('progress', function (progress) {
-                if (progress && (progress === null || progress === void 0 ? void 0 : progress.percent))
+                if (progress && (progress === null || progress === void 0 ? void 0 : progress.percent)) {
                     console.log('Processing: ' + progress.percent.toFixed(2) + '%');
+                    (0, server_1.updateStatus)("ADDING FILTER " + progress.percent.toFixed(2) + "%");
+                }
             })
                 .on('error', (err) => {
                 console.error('Error:', err);
@@ -148,8 +155,10 @@ function ScaledOnly(filename, watermark) {
             }))
                 .on('progress', function (progress) {
                 // console.log('Processing: ' + progress.percent.toFixed(2) + '%');
-                if (progress && (progress === null || progress === void 0 ? void 0 : progress.percent))
+                if (progress && (progress === null || progress === void 0 ? void 0 : progress.percent)) {
                     console.log('Processing: ' + progress.percent.toFixed(2) + '%');
+                    (0, server_1.updateStatus)("SCALING " + progress.percent.toFixed(2) + "%");
+                }
             })
                 .on('error', (err) => {
                 console.error('Error:', err);
@@ -178,8 +187,10 @@ function RenderWithWaterMark(filename) {
                 resolve();
             }))
                 .on('progress', function (progress) {
-                if (progress && (progress === null || progress === void 0 ? void 0 : progress.percent))
+                if (progress && (progress === null || progress === void 0 ? void 0 : progress.percent)) {
                     console.log('Watermarking Processing: ' + progress.percent.toFixed(2) + '%');
+                    (0, server_1.updateStatus)("WATERMARKING " + progress.percent.toFixed(2) + "%");
+                }
             })
                 .on('error', (err) => {
                 console.error('Error:', err);
@@ -215,6 +226,7 @@ function HandleRenderLogic(downloader, logo, filter, watermark) {
         catch (error) {
             //IMPORTANT: Handle a possible error. An error is thrown in case of network errors, or status codes of 400 and above.
             //Note that if the maxAttempts is set to higher than 1, the error is thrown only if all attempts fail.
+            (0, server_1.updateStatus)("Failed To upload");
             console.log("Download failed", error);
         }
     });
@@ -237,6 +249,7 @@ function HandleFromTiktok(tiktok_url, logo, filter, watermark, IdLink) {
                         maxAttempts: 3,
                         onProgress: function (percentage, chunk, remainingSize) {
                             //Gets called with each chunk.
+                            (0, server_1.updateStatus)("DOWNLOADING " + percentage + "%");
                             process.stdout.write("Downloading tiktok % " + percentage + "\r");
                         },
                     });
@@ -265,7 +278,8 @@ function HandleFromInstagram(ReelUrl, logo, filter, watermark, mongoId) {
                 maxAttempts: 3,
                 onProgress: function (percentage, chunk, remainingSize) {
                     //Gets called with each chunk.
-                    process.stdout.write("Downloading tiktok % " + percentage + "\r");
+                    (0, server_1.updateStatus)("DOWNLOADING " + percentage + "%");
+                    process.stdout.write("Downloading reel % " + percentage + "\r");
                 },
             });
             HandleRenderLogic(downloader, logo, filter, watermark);

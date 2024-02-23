@@ -13,6 +13,7 @@ exports.UploadShorts = void 0;
 const fs_1 = require("fs");
 const youtubei_js_1 = require("youtubei.js");
 const WaitList_1 = require("./db/WaitList");
+const server_1 = require("./server");
 const creds_path = './client_secret.json';
 const creds = (0, fs_1.existsSync)(creds_path) ? JSON.parse((0, fs_1.readFileSync)(creds_path).toString()) : undefined;
 function UploadShorts(filename, ShortTitle, desc, LinkID) {
@@ -33,27 +34,32 @@ function UploadShorts(filename, ShortTitle, desc, LinkID) {
         const file = (0, fs_1.readFileSync)('./ffmpeg-auto/' + filename + '.mp4');
         const hashtags = '#motivation #fitnessmotivation #motivationalquotes #gymmotivation #gym #workoutmotivation #motivational #success #successquotes #successmindset #positivity #hustle #mind #mindsetiseverything';
         //ila makanuch hashtags dir hadu par default mn a7ssn ydaro fconfig.json tji easy tbdl mn acc l acc
+        (0, server_1.updateStatus)("UPLOADING ...");
         console.log(`UPLOADING ...`);
         try {
             const upload = yield yt.studio.upload(file.buffer, {
                 title: ShortTitle,
                 description: desc || hashtags,
-                privacy: 'PUBLIC'
+                // privacy: 'PUBLIC'
+                privacy: 'PRIVATE'
             });
             console.info('Done!', upload);
             if (upload.success) {
+                (0, server_1.updateStatus)("IDLE");
                 console.log('Uploaded Succesfully');
                 yield (0, WaitList_1.DeleteLink)(LinkID);
                 return true;
             }
             else {
-                console.log('eerror while uploading');
+                (0, server_1.updateStatus)("ERROR While Uploading");
+                console.log('error while uploading');
                 return false;
             }
         }
         catch (error) {
             console.log('Error While Uploading , ' + error);
-            UploadShorts(filename, ShortTitle, desc, LinkID);
+            (0, server_1.updateStatus)("ERROR While Uploading");
+            //UploadShorts(filename,ShortTitle,desc,LinkID)
         }
         //delete file
     });
