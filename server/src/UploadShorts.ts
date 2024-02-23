@@ -35,8 +35,8 @@ export async function UploadShorts (filename:string,ShortTitle:string,desc:strin
     const upload = await yt.studio.upload(file.buffer, {
       title: ShortTitle,
       description: desc || hashtags,
-      // privacy: 'PUBLIC'
-      privacy: 'PRIVATE'
+      privacy: 'PUBLIC'
+      // privacy: 'PRIVATE'
     });
     
   
