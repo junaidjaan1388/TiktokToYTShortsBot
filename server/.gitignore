@@ -1,3 +1,4 @@
 .env
 node_modules/
 ffmpeg-auto/*.mp4
+client_secret.json

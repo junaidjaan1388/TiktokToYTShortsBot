@@ -40,7 +40,7 @@ function UploadShorts(filename, ShortTitle, desc, LinkID) {
             const upload = yield yt.studio.upload(file.buffer, {
                 title: ShortTitle,
                 description: desc || hashtags,
-                // privacy: 'PUBLIC'
+                //privacy: 'PUBLIC'
                 privacy: 'PRIVATE'
             });
             console.info('Done!', upload);
